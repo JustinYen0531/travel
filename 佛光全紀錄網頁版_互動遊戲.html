@@ -180,6 +180,37 @@
             line-height: 1.8;
             font-size: 1.08rem;
         }
+        #ending-notes-markdown strong { color: #fff0bf; }
+        #ending-notes-markdown code {
+            padding: 2px 6px;
+            background: rgba(243, 229, 171, 0.12);
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+            font-size: 0.95em;
+        }
+        #ending-notes-markdown hr {
+            border: 0;
+            border-top: 1px solid rgba(243, 229, 171, 0.28);
+            margin: 22px 0;
+        }
+        #ending-notes-markdown ol {
+            margin: 0 0 0 1.4rem;
+            padding: 0;
+        }
+        #ending-notes-markdown table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        #ending-notes-markdown th,
+        #ending-notes-markdown td {
+            border: 1px solid rgba(243, 229, 171, 0.3);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+            line-height: 1.7;
+        }
+        #ending-notes-markdown th { color: #fff0bf; }
         #ending-notes-actions {
             display: flex;
             justify-content: flex-end;
@@ -199,15 +230,65 @@
         #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 25px; transition: opacity 1s; }
         #start-img-wrap { width: 100%; height: 100%; border: 15px solid #fff; outline: 5px solid #000; position: relative; overflow: hidden; }
         #start-img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6); }
-        .start-btn { position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); padding: 25px 150px; font-size: 3.2rem; background: #8b5a2b; border: 5px solid #f3e5ab; color: #fff; font-weight: 950; box-shadow: 12px 12px 0 #000; }
+        #start-meta {
+            position: absolute;
+            top: 16%;
+            width: 100%;
+            text-align: center;
+            color: #fff0bf;
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-shadow: 4px 4px 0 #000;
+            letter-spacing: 2px;
+        }
+        #start-actions {
+            position: absolute;
+            bottom: 12%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+        }
+        .start-btn {
+            padding: 25px 150px;
+            font-size: 3.2rem;
+            background: #8b5a2b;
+            border: 5px solid #f3e5ab;
+            color: #fff;
+            font-weight: 950;
+            box-shadow: 12px 12px 0 #000;
+        }
+        .start-secondary-btn {
+            padding: 16px 70px;
+            font-size: 1.6rem;
+            background: rgba(32, 18, 12, 0.92);
+            border: 3px solid #f3e5ab;
+            color: #f3e5ab;
+            font-weight: 900;
+            box-shadow: 8px 8px 0 #000;
+        }
+        #start-date {
+            color: #fff0bf;
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-shadow: 3px 3px 0 #000;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
     <div id="start-overlay">
         <div id="start-img-wrap">
             <img id="start-img" src="web-images/IMG_0671.jpg">
+            <div id="start-meta">報告者為：閻星澄</div>
             <h1 style="position: absolute; top: 35%; width: 100%; text-align: center; color: #fff; font-size: 6.5rem; letter-spacing: 25px; text-shadow: 8px 8px 0 #000; font-weight: 950;">佛光山：末日流浪</h1>
-            <button class="start-btn" onclick="startGame()">START</button>
+            <div id="start-actions">
+                <button class="start-btn" onclick="startGame()">START</button>
+                <button class="start-secondary-btn" onclick="showFullReport()">履行後繼</button>
+                <div id="start-date">2026.4月8號</div>
+            </div>
         </div>
     </div>
 
@@ -260,7 +341,7 @@
         <div id="ending-notes-card">
             <div id="ending-notes-markdown"></div>
             <div id="ending-notes-actions">
-                <button onclick="location.reload()">重新開始</button>
+                <button id="ending-notes-button" onclick="handleNotesAction()">重新開始</button>
             </div>
         </div>
     </div>
@@ -382,6 +463,7 @@
         let currentIndex = 0;
         let currentDialogueIndex = 0;
         let isTyping = false;
+        let notesMode = 'ending';
         const endingNotesMarkdown = `# 彩蛋後記
 
 ## 遊戲裡沒明講的小細節
@@ -398,6 +480,155 @@
 ## 最後一句
 
 > 預期說是旅程，不如說更像流浪；但也正因為夠像流浪，它才真的打中了這堂課的主旨。`;
+        const fullReportMarkdown = `# 佛光大學：一場驚險的山頂流浪記（完整心得報告）
+## 旅程日期：2026年4月初
+## 報告人：閻星澄
+
+---
+
+## 壹、設定目標：在隨機中尋找自己
+
+老師說，旅行的第一步是設定一個目標。我的目標很模糊，卻也很真誠：**「追隨隨機性，嘗試與陌生人交流」**。
+
+這一天本來計畫去臺北象山。但出門前，我發現忘了塗防曬，加上象山每年至少爬一次早已失去新鮮感。就在那個猶豫的瞬間，某種「鬆架構」的本能啟動了，我決定去一個這輩子可能再也去不到的地方。**佛光大學**的名字浮現在腦海中。它因為大環境因素面臨停辦，坐落在宜蘭山頂的邊疆地帶，幾乎沒有任何人會獨自前往。
+
+我詢問了 AI，它建議從兩所候選學校（佛光大學、中華大學）中選擇佛光大學，因為搭乘臺鐵交通動線較為直接，約一個半小時可抵礁溪。那一刻，我感到熱血沸騰。我幾乎從未獨自前往外縣市，而這一次，我選擇了一個具有真正「探險價值」的地方作為首站。
+
+---
+
+## 貳、鬆架構的行程：城市褪去，田野浮現 (15:30 - 17:30)
+
+下午三點半，我抵達臺北車站。這是我第一次有意識地主動搭乘臺鐵，車廂內部出乎意料地舒適，那種感覺像是「加大版的捷運」。我坐在靠窗的位置，眼睛黏在窗外移不開。
+
+窗外的景色，是一部微型的地理演化史：
+- **初段**：建築物密集，城市的呼吸聲還在。
+- **中段**：工廠開始出現，田野穿插其間，節奏開始變慢。
+- **深段**：綠意覆蓋了一切，我感覺自己正從日常生活中「脫隊」。
+
+這正是老師說的「relaxed, see what happens」，我讓自己放空，只是看，只是感受。
+
+中途，我想起課堂上的小作業：與陌生人交流。我試圖打開校園 BBS，在版上詢問是否有人願意吃飯聊天。但版面極度冷清，整整一天只有一則貼文。我把手機放下，靠在椅背上想著，或許交流會在另一個意想不到的地方發生。
+
+然後，戲劇性的事發生了：**我坐過頭了**。當我驚醒，火車已經停在宜蘭站，而不是原定的礁溪。我慌亂地走向詢問處，補了 11 元的票價差額。走出站後，AI 安慰我說宜蘭也順路。我接受了這個「意外」，甚至覺得它讓這趟旅程變得更真實。
+
+> **Serendipity 出現了**：坐過頭，是這趟旅程最戲劇性的伏筆。
+
+---
+
+## 參、對話：計程車上的父子檔 (17:30 - 18:00)
+
+從宜蘭站出來，我招了一輛計程車。上車前，我看到車上已有一名男性乘客，猶豫要不要上去。司機突然說：「那是我兒子，你上來吧。」
+
+這是這趟旅程中第一個真正的「人際接觸」。
+
+原來，司機剛結束在礁溪國小擔任校車的職務，正帶著兒子繼續接計程車的班。車上展開了一段充滿角色拉扯的對話：
+
+**兒子（語氣隨性地問）**：「今天是不是放假？你怎麼現在才上山？」
+
+**我（保留地回答）**：「有上課喔，我也是要去學校。」
+
+那一刻，我感到一種微妙的尷尬，當天明明是我們政治大學的校慶，我卻在遙遠的宜蘭山區，試圖扮演一個佛光大學學生的角色。
+
+**兒子（再追問）**：「你確定沒放假嗎？那你為什麼現在還要上山？」
+
+**我（最終坦承）**：「其實我不是這裡的學生。我只是來做一個探索作業的。」
+
+沉默了一兩秒，司機父子相視而笑，露出那種「原來如此」的理解神情。
+
+我沉默地看著窗外，天色在山路的蜿蜒中以驚人的速度轉黑。才傍晚六點，卻已像深夜。那種光線的消失，讓我的心臟逐漸繃緊。
+
+到了山路入口，司機問我在哪裡下車。我完全不熟悉，只能模糊地說：「行政大樓那邊吧。」在候車亭遇到了一位等校車的學生，他告訴我，那棟最高處的建築叫做**「雲起樓」**。
+
+---
+
+## 肆、看到什麼、感受到什麼：雲起樓的夢核與末日感 (18:00 - 20:30)
+
+站在「雲起樓」前，我第一個念頭是：**這裡像是「Dreamcore（夢核）」影像成真了。**
+
+### 空間的詭譎感
+
+大樓內部燈光昏暗，入口處的走馬燈依然冰冷地播報著防疫措施，那是疫情時代的遺跡，如今卻依然閃爍著，像是一個時空錯位的訊號。我放眼望去，整棟行政大樓的學生不超過五位。二、三樓雖然開放，但那種空曠和回音讓我完全沒有勇氣獨自踏上去。
+
+媽媽剛好打電話來。她以為我在象山，快要下山了。當我告訴她我在「佛光大學」，她不相信，直到我把那輛印有佛光大學字樣的遊覽車拍給她看。
+
+「你在哪裡？那裡怎麼這麼暗？」她的聲音裡出現了一絲不安。
+
+### 以碗就口的晚餐
+
+上山前，司機父子曾主動詢問是否要給我一份餐盒，我客氣地婉拒了，心想校園內部一定有餐廳。但實際上，整棟行政大樓只有一間萊爾富，而且所有的加熱食品全部售罄，只剩下一份冷凍炒飯。
+
+我請店員微波。微波完成後，店員尷尬地說：「同學，我們餐具沒有了。」
+
+我愣了一秒。然後，在這座人煙稀少的山頂上，我做了一個非常本能的決定：**以碗就口，把米飯直接倒進嘴裡**。
+
+那是我吃過最「原始」的一頓飯，卻也是最有滋味的一頓，不是因為食物本身，而是那種孤立無援的真實感，讓人竟然有點想笑。
+
+### 蘭陽平原的懸崖美景
+
+填飽肚子後，我走到大樓外。眼前是近乎懸崖的絕壁，而絕壁之下，是整個蘭陽平原在夜色中閃爍的萬家燈火。那種衝突感非常強烈：腳下是繁華與人間煙火，身後是寂靜得令人心驚的廢校氛圍。
+
+我買了一盒巧克力，決定用步行的方式繼續探索。
+
+---
+
+## 伍、如何迷路：意志力的懸崖 (20:30 - 21:00)
+
+探險的浪漫在夜晚八點之後迅速轉化成現實的壓力。
+
+我根據司機教我的 55688 系統嘗試叫車，加了優先小費，卻始終沒有任何司機願意進山接客。媽媽的電話大約每十分鐘響一次，我在通話中儘量保持冷靜，隱瞞了幾百塊錢的車費，也隱瞞了此刻真正的慌張。
+
+下山途中，我路過了一棟寫著**「蔬菜學系」**的建築。那棟樓的模樣在月光下令人心驚膽戰，斑駁的牆面、昏暗的走廊，讓我壓根不敢靠近。我甚至幾度走進了死胡同，路都走不通，在山間黑暗中無助地倒退。
+
+走了大約二十分鐘，終於抵達警衛室。
+
+「最後一班校車幾點？」我問。
+
+「八點半，但已經走了。」
+
+那一刻，我確實感到了害怕。
+
+我重新向車行求助，請他們指派司機。又等了二十分鐘，看見計程車的燈光從蜿蜒的山路中出現時，我身體裡某個一直繃緊的東西，突然鬆開了。
+
+---
+
+## 陸、歸途：自強號與平安 (21:00 - 00:00)
+
+- **21:44**：在礁溪車站登上自強號，往臺北方向。
+- **23:30**：抵達臺北車站，重新感受熟悉的城市噪音與燈光。
+- **00:00**：踏入家門，媽媽坐在客廳等我。
+
+---
+
+## 柒、反身性思考：流浪的正名
+
+回顧這趟旅程，它從「一個忘記塗防曬的午後」演變成「一場長達九個小時的山頂流浪」。
+
+這整件事，我認為它非常精準地命中了「一個人的旅行」的核心精神：
+
+1. **關於「鬆架構」**：我沒有行程表，只有一個方向感。坐過頭不是失敗，它讓我遇見了父子司機；拒絕餐盒不是失誤，它讓我有了「以碗就口」那個只屬於我的奇特時刻。Serendipity 就是這樣發生的，你得先放棄控制，它才會出現。
+
+2. **關於陌生人的交流**：真正的交流不在網路論壇上，而是在那輛晃動的山區計程車裡，在那句「你確定你不是學生嗎」的反問後，我選擇了坦誠。
+
+3. **關於勇氣與安全感的辯證**：我一直靠「意志力壯膽」撐過那段黑暗的山路，但我同時也深刻體認到，**探險可以不帶攻略，但不能沒有基本的安全意識**。末班車的班次、通訊設備的電量、緊急聯絡的備案，這些是「浪漫探險」與「危險流浪」之間的界線。
+
+4. **關於這堂課的意義**：與其說我完成了一項作業，不如說我完成了一次對自己的壓力測試。我發現，孤獨並不是靜止的，它會隨著環境的黑暗與陌生而加劇，也會因為一個陌生司機的笑容，或是媽媽電話的接通聲，而瞬間被稀釋。
+
+---
+
+## 捌、照片附件清單
+
+| 照片編號 | 內容 |
+| :--- | :--- |
+| \`IMG_0649 - 0660\` | 臺鐵沿途風景（城市 → 田野演化） |
+| \`IMG_0661 - 0670\` | 礁溪 / 宜蘭一帶的暮色 |
+| \`IMG_0671 - 0680\` | 雲起樓內部、走馬燈、陰暗廊道 |
+| \`IMG_0681 - 0685\` | 蘭陽平原夜景、以碗就口的萊爾富晚餐 |
+| \`IMG_0687 - 0688\` | 深夜蔬菜學系大樓外觀、下山自拍 |
+| \`IMG_0695 - 0703\` | 車行通話紀錄、礁溪車站、自強號車票 |
+
+---
+
+> 「預期說是旅程，不如說更像流浪。但我認為，這明確地擊中了這堂課的主旨。」`;
 
         function startGame() {
             document.getElementById('start-overlay').style.opacity = '0';
@@ -530,75 +761,153 @@
             updateFrame();
         }
 
+        function renderInlineMarkdown(text) {
+            return text
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        }
+
         function renderMarkdown(markdown) {
             const lines = markdown.split('\n');
             const html = [];
             let inList = false;
+            let inOrderedList = false;
+            let inTable = false;
+
+            const closeOpenBlocks = () => {
+                if (inList) {
+                    html.push('</ul>');
+                    inList = false;
+                }
+                if (inOrderedList) {
+                    html.push('</ol>');
+                    inOrderedList = false;
+                }
+                if (inTable) {
+                    html.push('</tbody></table>');
+                    inTable = false;
+                }
+            };
 
             for (const rawLine of lines) {
                 const line = rawLine.trim();
 
                 if (!line) {
-                    if (inList) {
-                        html.push('</ul>');
-                        inList = false;
-                    }
+                    closeOpenBlocks();
+                    continue;
+                }
+
+                if (line === '---') {
+                    closeOpenBlocks();
+                    html.push('<hr>');
                     continue;
                 }
 
                 if (line.startsWith('## ')) {
-                    if (inList) {
-                        html.push('</ul>');
-                        inList = false;
-                    }
-                    html.push(`<h2>${line.slice(3)}</h2>`);
+                    closeOpenBlocks();
+                    html.push(`<h2>${renderInlineMarkdown(line.slice(3))}</h2>`);
                     continue;
                 }
 
                 if (line.startsWith('# ')) {
-                    if (inList) {
-                        html.push('</ul>');
-                        inList = false;
-                    }
-                    html.push(`<h1>${line.slice(2)}</h1>`);
+                    closeOpenBlocks();
+                    html.push(`<h1>${renderInlineMarkdown(line.slice(2))}</h1>`);
                     continue;
                 }
 
                 if (line.startsWith('- ')) {
+                    if (inOrderedList) {
+                        html.push('</ol>');
+                        inOrderedList = false;
+                    }
+                    if (inTable) {
+                        html.push('</tbody></table>');
+                        inTable = false;
+                    }
                     if (!inList) {
                         html.push('<ul>');
                         inList = true;
                     }
-                    html.push(`<li>${line.slice(2)}</li>`);
+                    html.push(`<li>${renderInlineMarkdown(line.slice(2))}</li>`);
                     continue;
                 }
 
-                if (line.startsWith('> ')) {
+                if (/^\d+\.\s+/.test(line)) {
                     if (inList) {
                         html.push('</ul>');
                         inList = false;
                     }
-                    html.push(`<blockquote>${line.slice(2)}</blockquote>`);
+                    if (inTable) {
+                        html.push('</tbody></table>');
+                        inTable = false;
+                    }
+                    if (!inOrderedList) {
+                        html.push('<ol>');
+                        inOrderedList = true;
+                    }
+                    html.push(`<li>${renderInlineMarkdown(line.replace(/^\d+\.\s+/, ''))}</li>`);
                     continue;
                 }
 
-                if (inList) {
-                    html.push('</ul>');
-                    inList = false;
+                if (line.startsWith('|') && line.endsWith('|')) {
+                    const cells = line.split('|').slice(1, -1).map(cell => cell.trim());
+                    const isSeparator = cells.every(cell => /^:?-+:?$/.test(cell));
+                    if (isSeparator) {
+                        continue;
+                    }
+                    if (inList) {
+                        html.push('</ul>');
+                        inList = false;
+                    }
+                    if (inOrderedList) {
+                        html.push('</ol>');
+                        inOrderedList = false;
+                    }
+                    if (!inTable) {
+                        html.push('<table><tbody>');
+                        inTable = true;
+                    }
+                    const tag = html[html.length - 1] === '<table><tbody>' ? 'th' : 'td';
+                    html.push(`<tr>${cells.map(cell => `<${tag}>${renderInlineMarkdown(cell)}</${tag}>`).join('')}</tr>`);
+                    continue;
                 }
-                html.push(`<p>${line}</p>`);
+
+                if (line.startsWith('> ')) {
+                    closeOpenBlocks();
+                    html.push(`<blockquote>${renderInlineMarkdown(line.slice(2))}</blockquote>`);
+                    continue;
+                }
+
+                closeOpenBlocks();
+                html.push(`<p>${renderInlineMarkdown(line)}</p>`);
             }
 
-            if (inList) {
-                html.push('</ul>');
-            }
+            closeOpenBlocks();
 
             return html.join('');
         }
 
-        function showEndingNotes() {
-            document.getElementById('ending-notes-markdown').innerHTML = renderMarkdown(endingNotesMarkdown);
+        function openNotesPanel(markdown, mode) {
+            notesMode = mode;
+            document.getElementById('ending-notes-markdown').innerHTML = renderMarkdown(markdown);
+            document.getElementById('ending-notes-button').innerText = mode === 'full-report' ? '關閉' : '重新開始';
             document.getElementById('ending-notes').style.display = 'flex';
+        }
+
+        function showFullReport() {
+            openNotesPanel(fullReportMarkdown, 'full-report');
+        }
+
+        function handleNotesAction() {
+            if (notesMode === 'full-report') {
+                document.getElementById('ending-notes').style.display = 'none';
+                return;
+            }
+            location.reload();
+        }
+
+        function showEndingNotes() {
+            openNotesPanel(endingNotesMarkdown, 'ending');
         }
 
         function nextAction() {
