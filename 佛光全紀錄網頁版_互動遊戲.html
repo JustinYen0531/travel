@@ -6,206 +6,129 @@
     <title>佛光山探險：視覺小說冒險（完全版）</title>
     <style>
         :root {
-            --textbox-bg: rgba(28, 16, 12, 0.98);
+            --textbox-bg: rgba(26, 15, 12, 0.98);
             --option-bg: linear-gradient(180deg, #d4a76a 0%, #8b5a2b 100%);
             --option-border: #f3e5ab;
-            --textbox-height: 250px;
-            --textbox-bottom-gap: 30px;
+            --clock-color: #f3e5ab;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: pointer; user-select: none; }
         body, html { width: 100%; height: 100%; overflow: hidden; background: black; font-family: "Noto Sans TC", sans-serif; }
 
-        #game-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover;
-            background-position: center;
-            transition: opacity 1.2s ease-in-out;
-            z-index: 1;
+        /* 時鐘計量器樣式 - 放在圖片容器右側 */
+        #adventure-clock-wrap {
+            position: absolute;
+            right: -80px;
+            top: 20px;
+            width: 60px;
+            height: 60px;
+            z-index: 15;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .vignette {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            box-shadow: inset 0 0 250px rgba(0,0,0,1);
-            z-index: 2;
-            pointer-events: none;
+        #adventure-clock {
+            width: 55px; height: 55px;
+            border-radius: 50%;
+            border: 3px solid #f3e5ab;
+            position: relative;
+            background: rgba(0,0,0,0.5);
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(243, 229, 171, 0.3);
         }
 
-        /* 圖片沉浸式比例與包裹 - 修正為頂天立地並置中 */
+        #clock-fill {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: conic-gradient(var(--clock-color) 0%, transparent 0%);
+            transition: all 1s ease;
+        }
+
+        #clock-label {
+            color: #f3e5ab;
+            font-size: 0.8rem;
+            margin-top: 8px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px #000;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* 核心佈局 */
+        #game-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; transition: opacity 1s; }
+        .vignette { position: fixed; top: 0; left: 0; width: 100%; height: 100%; box-shadow: inset 0 0 250px rgba(0,0,0,1); z-index: 2; pointer-events: none; }
+        #choice-dim { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 18; display: none; }
+
         #scene-image-wrap {
             position: fixed;
-            left: 50%;
-            top: 0;
-            transform: translateX(-50%);
+            left: 50%; top: 0; transform: translateX(-50%);
             width: 100vw;
-            /* 高度 = 總高度 - 對話框高度 - 底部間距 - 緩衝間隔 */
-            height: calc(100vh - var(--textbox-height) - var(--textbox-bottom-gap) - 40px);
+            height: calc(100vh - 320px);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 9;
             pointer-events: none;
-            padding-top: 20px;
         }
+
+        #inner-image-wrap { position: relative; display: flex; align-items: center; justify-content: center; height: 95%; max-width: 90%; }
 
         #scene-image {
-            display: block;
-            width: auto;
-            max-width: 95%;
-            height: auto;
-            max-height: 98%;
-            object-fit: contain;
-            border-radius: 8px;
-            border: 6px solid #f3e5ab; /* 厚白/黃金框 */
-            outline: 4px solid #2c1810;  /* 外層深色描邊 */
-            box-shadow: 0 0 60px rgba(0,0,0,1), 0 0 20px rgba(243, 229, 171, 0.2);
-            background: #111;
+            max-width: 100%; max-height: 100%; object-fit: contain;
+            border-radius: 4px; border: 6px solid #f3e5ab; outline: 3px solid #281510;
+            box-shadow: 0 0 50px rgba(0,0,0,1);
         }
 
-        #choice-dim {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(8px);
-            z-index: 15;
-            display: none;
-        }
+        #text-box-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 94%; max-width: 1100px; z-index: 20; }
+        #text-box { background: var(--textbox-bg); border: 4px solid #8b5a2b; border-radius: 4px; padding: 35px 55px; height: 250px; position: relative; }
+        #speaker-name { position: absolute; top: -22px; left: 45px; background: #8b5a2b; padding: 6px 40px; border: 2px solid #f3e5ab; color: #f3e5ab; font-weight: bold; font-size: 1.3rem; }
+        #dialogue-text { color: #f3e5ab; font-size: 1.6rem; line-height: 1.8; margin-top: 5px; }
 
-        /* 對話框區域 */
-        #text-box-container {
-            position: fixed;
-            bottom: var(--textbox-bottom-gap);
-            left: 50%;
-            transform: translateX(-50%);
-            width: 94%;
-            max-width: 1100px;
-            z-index: 10;
-        }
+        #options-container { position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 30; display: none; flex-direction: column; gap: 20px; width: 500px; }
+        .option-btn { background: var(--option-bg); border: 3px solid var(--option-border); padding: 22px; color: #2c1810; font-weight: 900; font-size: 1.5rem; text-align: center; box-shadow: 8px 8px 0px #000; transition: all 0.2s; }
+        .option-btn:hover { transform: translate(-4px, -4px); box-shadow: 12px 12px 0px #000; }
 
-        #text-box {
-            background: var(--textbox-bg);
-            border: 4px solid #8b5a2b;
-            border-radius: 6px;
-            padding: 35px 55px;
-            height: var(--textbox-height);
-            box-shadow: 0 10px 50px rgba(0,0,0,0.9);
-            position: relative;
-        }
-
-        #speaker-name {
-            position: absolute;
-            top: -24px;
-            left: 45px;
-            background: #8b5a2b;
-            padding: 6px 40px;
-            border: 2px solid #f3e5ab;
-            color: #f3e5ab;
-            font-weight: bold;
-            font-size: 1.3rem;
-            box-shadow: 4px 4px 0px #000;
-        }
-
-        #dialogue-text {
-            color: #f3e5ab;
-            font-size: 1.6rem;
-            line-height: 1.8;
-            margin-top: 10px;
-            text-shadow: 1px 1px 2px #000;
-        }
-
-        #options-container {
-            position: fixed;
-            top: 45%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 20;
-            display: none;
-            flex-direction: column;
-            gap: 20px;
-            width: 500px;
-        }
-
-        .option-btn {
-            background: var(--option-bg);
-            border: 3px solid var(--option-border);
-            padding: 22px;
-            color: #2c1810;
-            font-weight: 900;
-            font-size: 1.5rem;
-            text-align: center;
-            box-shadow: 8px 8px 0px #000;
-            transition: all 0.2s;
-        }
-        .option-btn:hover { transform: translate(-4px, -4px); box-shadow: 12px 12px 0px #000; filter: brightness(1.1); }
-
-        #next-indicator {
-            position: absolute;
-            bottom: 25px;
-            right: 40px;
-            color: #f3e5ab;
-            animation: bounce 0.8s infinite alternate;
-        }
-
+        #next-indicator { position: absolute; bottom: 25px; right: 40px; color: #f3e5ab; animation: bounce 0.8s infinite alternate; }
         @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(8px); } }
 
         /* 首頁 */
-        #start-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #121212;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 1s;
-            padding: 30px;
-        }
-        #start-img-wrap {
-            width: 100%; height: 100%;
-            border: 10px solid #fff;
-            outline: 4px solid #000;
-            position: relative;
-            overflow: hidden;
-        }
-        #start-img { width: 100%; height: 100%; object-fit: cover; }
-        #start-title {
-            position: absolute;
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.7);
-            padding: 40px 60px;
-            border: 2px solid #fff;
-            text-align: center;
-        }
+        #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100; display: flex; align-items: center; justify-content: center; transition: opacity 1s; padding: 25px; }
+        #start-img-wrap { width: 100%; height: 100%; border: 8px solid #fff; outline: 3px solid #000; position: relative; overflow: hidden; }
+        #start-img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); }
+        .start-btn { position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); padding: 18px 80px; font-size: 2.2rem; background: #8b5a2b; border: 3px solid #f3e5ab; color: white; font-weight: 900; cursor: pointer; box-shadow: 8px 8px 0 #000; }
 
-        #progress {
-            position: fixed;
-            top: 20px; right: 40px;
-            color: rgba(243, 229, 171, 0.4);
-            font-size: 1.2rem;
-            z-index: 30;
-        }
+        #progress { position: fixed; top: 20px; left: 40px; color: rgba(243, 229, 171, 0.4); font-size: 1.1rem; z-index: 30; }
     </style>
 </head>
 <body>
-    <div id="progress">冒險進度：1 / 10</div>
+    <div id="progress">旅程進度：1 / 10</div>
     
     <div id="start-overlay">
         <div id="start-img-wrap">
             <img id="start-img" src="web-images/IMG_0671.jpg">
-            <div id="start-title">
-                <h1 style="font-size: 4.5rem; color: #fff; letter-spacing: 15px; margin-bottom: 30px;">佛光山：末日流浪</h1>
-                <button style="padding: 15px 80px; font-size: 2rem; background: #fff; border: none; font-weight: 900;" onclick="startGame()">ENTER</button>
-            </div>
+            <h1 style="position: absolute; top: 40%; width: 100%; text-align: center; color: #fff; font-size: 5rem; letter-spacing: 15px; text-shadow: 4px 4px 0 #000;">佛光山：末日流浪</h1>
+            <button class="start-btn" onclick="startGame()">START</button>
         </div>
     </div>
 
     <div id="game-bg"></div>
     <div class="vignette"></div>
     <div id="choice-dim"></div>
+
     <div id="scene-image-wrap">
-        <img id="scene-image" alt="劇情圖片">
+        <div id="inner-image-wrap">
+            <img id="scene-image" alt="劇情圖片">
+            
+            <!-- 冒險時鐘計量器 -->
+            <div id="adventure-clock-wrap">
+                <div id="adventure-clock">
+                    <div id="clock-fill"></div>
+                </div>
+                <div id="clock-label">15:00 出發</div>
+            </div>
+        </div>
     </div>
 
     <div id="options-container"></div>
@@ -213,121 +136,141 @@
     <div id="text-box-container" onclick="nextAction()">
         <div id="text-box">
             <div id="speaker-name">主角</div>
-            <div id="dialogue-text">...</div>
+            <div id="dialogue-text">正在回憶旅途...</div>
             <div id="next-indicator">▼</div>
         </div>
     </div>
 
     <script>
         const scenario = [
-            { bg: 'web-images/IMG_0655.jpg', image: 'web-images/IMG_0649.jpg', dialogues: [
+            { bg: 'web-images/IMG_0655.jpg', image: 'web-images/IMG_0649.jpg', label: '15:00 出發', dialogues: [
                 { speaker: '旁白', text: '老師說，旅行的第一步是設定目標。我的目標其實很模糊，卻也很真誠：追隨隨機性，並且嘗試與陌生人交流。' },
-                { speaker: '旁白', text: '這個目標沒有明確路線，卻逼著我不要再照慣性行走，而是把自己放進一個真正可能遇到陌生人的地方。' }
+                { speaker: '旁白', text: '這個目標沒有明確路線，卻逼著我不要再照慣性行走，而是把自己放進一個真正可能遇到陌生人的地方。' },
+                { speaker: '旁白', text: '也就是說，這趟旅行從一開始就不是為了效率，而是為了看看自己能不能在未知裡撐住好奇心。' }
             ], next: 1 },
-            { bg: 'web-images/IMG_0655.jpg', image: 'web-images/IMG_0650.jpg', dialogues: [
-                { speaker: '我', text: '出門前我才發現忘了塗防曬。這一天，我不想只重複平庸的行程。我決定去一個這輩子可能再也去不到的地方：佛光大學。' },
-                { speaker: '我', text: '它在宜蘭山頂，甚至因為大環境因素面臨停辦。幾乎沒有人會獨自前往，這反而讓它更像我真正該去的目的地。' }
+            { bg: 'web-images/IMG_0655.jpg', image: 'web-images/IMG_0650.jpg', label: '15:20 猶豫', dialogues: [
+                { speaker: '我', text: '出門前我才發現忘了防曬。這一天，我不想只重複平庸的行程。我決定去一個這輩子可能再也去不到的地方：佛光大學。' },
+                { speaker: '我', text: '它在宜蘭山頂，甚至因為大環境因素面臨停辦。這反而讓它更具備探險價值。' },
+                { speaker: '我', text: '和一座早已走熟的象山相比，佛光大學帶著一種荒涼又稀有的吸引力，像是專門在等我偏離原定路線。' }
             ], next: 2 },
-            { 
-                bg: 'web-images/IMG_0655.jpg', image: 'web-images/IMG_0665.jpg', speaker: '抉擇', text: '第一題：目的地選擇', 
+            {
+                bg: 'web-images/IMG_0655.jpg', image: 'web-images/IMG_0665.jpg', speaker: '抉擇', text: '第一題：當原本的象山行程突然失去吸引力時，我究竟要回頭保守收場，還是改去佛光大學開啟真正未知的旅程？', label: '抉擇中',
                 options: [
                     { title: '打道回府避暑', next: 'END_HOME' },
                     { title: '前往佛光大學 (宜蘭)', next: 3 }
                 ]
             },
-            { bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0661.jpg', dialogues: [
-                { speaker: '我', text: '血液開始沸騰。AI 建議我前往佛大，因為搭臺鐵速度較快。這是一場具備探險價值的「外縣市處女秀」。' },
-                { speaker: '我', text: '我幾乎從未獨自前往外縣市，而這次只因為交通動線更直接、約一個半小時可抵達礁溪，就決定把熱血押在佛大身上。' }
+            { bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0661.jpg', label: '16:00 啟程', dialogues: [
+                { speaker: '我', text: '血液開始沸騰。AI 建議我前往佛大，因為搭臺鐵速度較快。這是具備探險價值的「外縣市處女秀」。' },
+                { speaker: '我', text: '我幾乎從未獨自前往外縣市，而這次只因為交通動線更直接、約一個半小時可抵達礁溪，就決定把熱血押在佛大身上。' },
+                { speaker: '我', text: '那一刻我其實沒有完整計畫，只有一種很強的直覺，覺得如果現在不出發，這種冒險衝動就會立刻消失。' }
             ], next: 4 },
-            { 
-                bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0657.jpg', speaker: '抉擇', text: '第二題：心態調整', 
+            {
+                bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0657.jpg', speaker: '抉擇', text: '第二題：既然已經決定衝去宜蘭山上的佛光大學，我接下來該維持熱血直衝，還是先補齊裝備再比較穩妥地出發？', label: '抉擇中',
                 options: [
                     { title: '堅持熱血衝一波', next: 5 },
                     { title: '買個防曬再走', next: 5 }
                 ]
             },
-            { bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0663.jpg', dialogues: [
-                { speaker: '臺鐵', text: '坐在窗邊，我看著地景慢慢演化。城市褪去，田野浮現。這種體察讓我感到前所未有的「脫隊感」。' },
-                { speaker: '臺鐵', text: '窗外先是密集建築，再來是工廠與田野交錯，最後綠意慢慢覆蓋一切。老師說的 relaxed, see what happens，大概就是這種感覺。' }
+            { bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0663.jpg', label: '17:00 體察', dialogues: [
+                { speaker: '臺鐵', text: '坐在窗邊，我看著地景慢慢演化。城市褪去，田野浮現。這種體察讓我感到「脫隊感」。' },
+                { speaker: '臺鐵', text: '窗外先是密集建築，再來是工廠與田野交錯，最後綠意慢慢覆蓋一切。老師說的 relaxed, see what happens，大概就是這種感覺。' },
+                { speaker: '臺鐵', text: '我只是安靜看著窗外，卻很明顯感覺到自己正從熟悉日常被一點點抽離，像要被送往另一個版本的人生。' }
             ], next: 6 },
-            { bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0664.jpg', dialogues: [
-                { speaker: '驚醒', text: '糟了！醒來已經到了宜蘭站！我只好補了十一元票差。感覺這就是 Serendipity 正在對我招手。' },
-                { speaker: '驚醒', text: '我慌亂地走向詢問處補票，走出站後 AI 還安慰我說宜蘭也算順路。這個意外沒有毀掉旅程，反而把它推向更真實的方向。' }
+            { bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0664.jpg', label: '17:40 意外', dialogues: [
+                { speaker: '驚醒', text: '糟了！醒來已經到了宜蘭站！我只好補票。感覺這就是 Serendipity。' },
+                { speaker: '驚醒', text: '我慌亂地走向詢問處補票，走出站後 AI 還安慰我說宜蘭也算順路。這個意外沒有毀掉旅程，反而把它推向更真實的方向。' },
+                { speaker: '驚醒', text: '如果我今天連坐過站都要立刻懊惱撤退，那這趟旅程大概也不配叫探險，所以我決定接受這個岔路。' }
             ], next: 7 },
-            { 
-                bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0666.jpg', speaker: '抉擇', text: '第三題：路上的波折', 
+            {
+                bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0666.jpg', speaker: '抉擇', text: '第三題：當我一覺醒來發現自己直接坐過站到宜蘭時，應該乾脆把錯誤變成旅程的一部分，還是立刻回頭認賠？', label: '抉擇中',
                 options: [
                     { title: '將錯就錯下車', next: 8 },
-                    { title: '沮喪地坐回去', next: 'END_BACK' }
+                    { title: '坐回礁溪', next: 'END_BACK' }
                 ]
             },
-            { bg: 'web-images/IMG_0664.jpg', image: 'web-images/IMG_0667.jpg', dialogues: [
-                { speaker: '計程車', text: '我搭上了車。後座坐著司機下班的兒子。這成了這趟旅程第一個真正的人際接觸。' },
-                { speaker: '計程車', text: '他一路追問我是不是放假、為什麼現在才上山。我最後坦承自己根本不是佛光學生，只是來做探索作業，司機父子才露出「原來如此」的笑。' }
+            { bg: 'web-images/IMG_0664.jpg', image: 'web-images/IMG_0667.jpg', label: '18:15 登山', dialogues: [
+                { speaker: '計程車', text: '搭上了車。後座坐著司機下班的兒子。這成了這趟旅程第一個真正的人際接觸。' },
+                { speaker: '計程車', text: '他一路追問我是不是放假、為什麼現在才上山。我最後坦承自己根本不是佛光學生，只是來做探索作業，司機父子才露出「原來如此」的笑。' },
+                { speaker: '計程車', text: '那段對話有點尷尬，卻也很真實。我本來想裝得自然一點，最後還是只能靠坦白換來真正的交流。' }
             ], next: 9 },
-            { 
-                bg: 'web-images/IMG_0664.jpg', image: 'web-images/IMG_0669.jpg', speaker: '抉擇', text: '第四題：人際交流', 
+            {
+                bg: 'web-images/IMG_0664.jpg', image: 'web-images/IMG_0669.jpg', speaker: '抉擇', text: '第四題：面對司機父子難得釋出的善意與攀談機會，我應該先婉拒保持距離，還是直接接受這份山路上的人情味？', label: '抉擇中',
                 options: [
-                    { title: '婉拒餐盒 (期待校內餐廳)', next: 10 },
-                    { title: '欣然接受溫暖', next: 10 }
+                    { title: '婉拒餐盒', next: 10 },
+                    { title: '欣然接受', next: 10 }
                 ]
             },
-            { bg: 'web-images/IMG_0671.jpg', image: 'web-images/IMG_0670.jpg', dialogues: [
-                { speaker: '雲起樓', text: '山頂行政大樓「雲起樓」漆黑無比。走馬燈閃動著疫情告示。這分明就是 Dreamcore 的真實場景。' },
-                { speaker: '雲起樓', text: '媽媽剛好打電話來，她原本以為我在象山。當我說自己在佛光大學時，她根本不信，直到我拍下印著校名的車子傳給她。' }
+            { bg: 'web-images/IMG_0671.jpg', image: 'web-images/IMG_0670.jpg', label: '19:00 霧起', dialogues: [
+                { speaker: '雲起樓', text: '大樓漆黑無比。走馬燈閃動著疫情告示。這分明就是 Dreamcore 場景。' },
+                { speaker: '雲起樓', text: '媽媽剛好打電話來，她原本以為我在象山。當我說自己在佛光大學時，她根本不信，直到我拍下印著校名的車子傳給她。' },
+                { speaker: '雲起樓', text: '眼前的空曠和電話那頭的錯愕疊在一起，讓我第一次真正感受到，自己已經走進一個外人難以理解的地方。' }
             ], next: 11 },
-            { 
-                bg: 'web-images/IMG_0674.jpg', image: 'web-images/IMG_0671.jpg', speaker: '抉擇', text: '第五題：校園探險', 
+            {
+                bg: 'web-images/IMG_0674.jpg', image: 'web-images/IMG_0671.jpg', speaker: '抉擇', text: '第五題：當整棟雲起樓又黑又空、氣氛像末日夢境時，我應該鼓起膽子繼續往更深處探索，還是待在安全一點的亮處？', label: '抉擇中',
                 options: [
-                    { title: '深入禁區探索', next: 12 },
-                    { title: '留在萊爾富周邊', next: 12 }
+                    { title: '深入禁區', next: 12 },
+                    { title: '留在原地', next: 12 }
                 ]
             },
-            { bg: 'web-images/IMG_0674.jpg', image: 'web-images/IMG_0681.jpg', dialogues: [
-                { speaker: '生存', text: '這裡沒有餐具。我蹲在走廊邊，對著蘭陽平原深淵般的夜色，將米粒倒進嘴裡。' },
-                { speaker: '生存', text: '我原本以為校園內一定有餐廳，結果整棟樓只剩萊爾富，而且加熱食品幾乎售罄，只剩一份冷凍炒飯。連餐具也沒有，逼得我只能以碗就口。' }
+            { bg: 'web-images/IMG_0674.jpg', image: 'web-images/IMG_0681.jpg', label: '19:40 生存', dialogues: [
+                { speaker: '生存', text: '沒有餐具。我蹲在走廊邊，對著深淵般的夜色，將米粒倒進嘴裡。' },
+                { speaker: '生存', text: '我原本以為校園內一定有餐廳，結果整棟樓只剩萊爾富，而且加熱食品幾乎售罄，只剩一份冷凍炒飯。連餐具也沒有，逼得我只能以碗就口。' },
+                { speaker: '生存', text: '這一餐吃起來荒謬又狼狽，但也正因為那麼原始，我才很清楚知道自己真的站在一場獨自完成的流浪裡。' }
             ], next: 13 },
-            { 
-                bg: 'web-images/IMG_0674.jpg', image: 'web-images/IMG_0680.jpg', speaker: '抉擇', text: '第六題：生存方式', 
+            {
+                bg: 'web-images/IMG_0674.jpg', image: 'web-images/IMG_0680.jpg', speaker: '抉擇', text: '第六題：在校園商店只剩冷凍炒飯、卻連一副餐具都找不到的情況下，我到底要怎麼體面或不體面地把晚餐吞下去？', label: '抉擇中',
                 options: [
-                    { title: '以碗就口倒進嘴裡', next: 14 },
-                    { title: '用手抓著吃', next: 14 }
+                    { title: '以碗就口', next: 14 },
+                    { title: '優雅進食', next: 14 }
                 ]
             },
-            { bg: 'web-images/IMG_0675.jpg', image: 'web-images/IMG_0679.jpg', dialogues: [
-                { speaker: '下山驚魂', text: '晚上八點。叫不到車。我看見那棟陰森不堪的「蔬菜學系」。我想起母親焦急的電話，那種壓迫感快讓我崩潰。' },
-                { speaker: '下山驚魂', text: '我用 55688 加了優先小費，卻還是沒有司機願意進山。月光下那棟樓斑駁得像鬼片場景，我甚至還幾度走進死胡同。' }
+            { bg: 'web-images/IMG_0675.jpg', image: 'web-images/IMG_0679.jpg', label: '20:10 驚魂', dialogues: [
+                { speaker: '下山驚魂', text: '晚上八點。叫不到車。看見「蔬菜學系」那棟陰森大樓，我的意志力快崩潰。' },
+                { speaker: '下山驚魂', text: '我用 55688 加了優先小費，卻還是沒有司機願意進山。月光下那棟樓斑駁得像鬼片場景，我甚至還幾度走進死胡同。' },
+                { speaker: '下山驚魂', text: '那時候的恐懼並不是突然爆炸，而是一層層往上堆，從沒車、沒路、沒人，到最後連自己的判斷都快不相信了。' }
             ], next: 15 },
-            { 
-                bg: 'web-images/IMG_0675.jpg', image: 'web-images/IMG_0684.jpg', speaker: '抉擇', text: '第七題：意志與恐懼', 
+            {
+                bg: 'web-images/IMG_0675.jpg', image: 'web-images/IMG_0684.jpg', speaker: '抉擇', text: '第七題：當黑夜、蔬菜學系大樓、叫不到車與媽媽的電話同時壓上來時，我還要硬撐著往前走，還是先停下來崩潰？', label: '抉擇中',
                 options: [
-                    { title: '靠意志力繼續走', next: 16 },
-                    { title: '停下來哭泣', next: 16 }
+                    { title: '靠意志力走', next: 16 },
+                    { title: '坐下大哭', next: 16 }
                 ]
             },
-            { bg: 'web-images/IMG_0681.jpg', image: 'IMG_0695.PNG', dialogues: [
-                { speaker: '孤絕', text: '最後一班校車已走。我握緊手機跟僅存的電力，對著黑暗的山區嘗試發出最後的救援訊源。' },
-                { speaker: '孤絕', text: '警衛室裡的人告訴我，末班校車八點半就離開了。那一刻我才真正意識到，浪漫探險和危險流浪之間只有一道很薄的線。' }
+            { bg: 'web-images/IMG_0681.jpg', image: 'web-images/IMG_0687.jpg', label: '20:45 孤絕', dialogues: [
+                { speaker: '孤絕', text: '最後一班校車已走。我握緊手機跟電力，嘗試發出最後的救援訊源。' },
+                { speaker: '孤絕', text: '警衛室裡的人告訴我，末班校車八點半就離開了。那一刻我才真正意識到，浪漫探險和危險流浪之間只有一道很薄的線。' },
+                { speaker: '孤絕', text: '之前那些自以為帥氣的隨機決定，在這一刻全部都得面對現實成本，而我只能拚命把自己從失控邊緣拉回來。' }
             ], next: 17 },
-            { 
-                bg: 'web-images/IMG_0687.jpg', image: 'IMG_0696.PNG', speaker: '抉擇', text: '第八題：告求', 
+            {
+                bg: 'web-images/IMG_0687.jpg', image: 'IMG_0696.PNG', speaker: '抉擇', text: '第八題：在山上已經錯過末班車、手機電量也見底的時候，我該繼續瞞著媽媽假裝沒事，還是老實開口求援比較實際？', label: '抉擇中',
                 options: [
-                    { title: '瞞著媽媽假裝安全', next: 18 },
+                    { title: '瞞著媽媽', next: 18 },
                     { title: '誠實求援', next: 18 }
                 ]
             },
-            { bg: 'web-images/IMG_0703.jpg', image: 'web-images/IMG_0701.jpg', dialogues: [
-                { speaker: '救命', text: '兩道白色燈光出現了。那輛計程車是我今晚看過最美的風景。21:44 我終於登上了自強號。' },
-                { speaker: '救命', text: '23:30 我回到臺北車站，午夜十二點才踏進家門。熟悉的城市燈光重新包住我，也讓這場流浪終於有了平安的結尾。' }
+            { bg: 'web-images/IMG_0703.jpg', image: 'web-images/IMG_0701.jpg', label: '21:30 救贖', dialogues: [
+                { speaker: '救命', text: '兩道光出現了。那是計程車。21:44 我終於登上了自強號。' },
+                { speaker: '救命', text: '23:30 我回到臺北車站，午夜十二點才踏進家門。熟悉的城市燈光重新包住我，也讓這場流浪終於有了平安的結尾。' },
+                { speaker: '救命', text: '回程的那一刻我才理解，安全回家不是破壞冒險感，而是讓整趟旅程有資格被回想、被寫下、被當成真正的經驗。' }
             ], next: 19 },
-            { 
-                bg: 'web-images/IMG_0703.jpg', image: 'web-images/IMG_0688.jpg', speaker: '抉擇', text: '第九題：總結原則', 
+            {
+                bg: 'web-images/IMG_0703.jpg', image: 'web-images/IMG_0688.jpg', speaker: '抉擇', text: '第九題：經歷整晚的混亂與獲救之後，我應該把這次旅行理解成不用做功課也沒差，還是更該記住安全準備的重要性？', label: '抉擇中',
                 options: [
-                    { title: '不作功課但確保安全', next: 20 },
+                    { title: '確保安全意識', next: 20 },
                     { title: '以後只爬象山', next: 20 }
                 ]
             },
-            { bg: 'web-images/IMG_0701.jpg', speaker: '結語', text: '這 9 小時的流浪讓我明白，真正的探險不在於攻略，而是那一股如何回家、如何與人連結的意志力。這是我這輩子最重要的作業。', next: 'END' }
+            {
+                bg: 'web-images/IMG_0701.jpg', image: 'web-images/IMG_0688.jpg', speaker: '抉擇', text: '第十題：如果要替這九小時的佛光流浪下一個結論，我該接受隨機與準備必須並存，還是乾脆從此遠離所有山區冒險？', label: '抉擇中',
+                options: [
+                    { title: '接受隨機與安全並存', next: 21 },
+                    { title: '從此遠離山區冒險', next: 21 }
+                ]
+            },
+            { bg: 'web-images/IMG_0701.jpg', label: '00:00 終章', dialogues: [
+                { speaker: '結語', text: '這 9 小時讓我明白，探險不在於攻略，而在回家與連結的意志。' }
+            ], next: 'END' }
         ];
 
         let currentIndex = 0;
@@ -348,6 +291,8 @@
             const sceneImageWrap = document.getElementById('scene-image-wrap');
             const sceneImage = document.getElementById('scene-image');
             const choiceDim = document.getElementById('choice-dim');
+            const clockFill = document.getElementById('clock-fill');
+            const clockLabel = document.getElementById('clock-label');
             
             bg.style.backgroundImage = `url('${current.bg}')`;
             if (current.image) {
@@ -357,7 +302,17 @@
                 sceneImageWrap.style.display = 'none';
             }
             
-            document.getElementById('progress').innerText = `冒險進度：${currentIndex + 1} / ${scenario.length}`;
+            // 更新時鐘邏輯
+            const percent = ((currentIndex + 1) / scenario.length) * 100;
+            let clockColor = '#f3e5ab'; // 黃色 (出發)
+            if (percent > 40) clockColor = '#ff8c00'; // 橘色 (日落)
+            if (percent > 75) clockColor = '#6a5acd'; // 紫色 (深夜)
+            
+            document.documentElement.style.setProperty('--clock-color', clockColor);
+            clockFill.style.background = `conic-gradient(${clockColor} ${percent}%, transparent 0%)`;
+            clockLabel.innerText = current.label;
+
+            document.getElementById('progress').innerText = `旅程進度：${currentIndex + 1} / ${scenario.length}`;
             currentDialogueIndex = 0;
             renderDialogue();
             
@@ -415,7 +370,7 @@
         }
 
         function handleOption(nextId) {
-            if (nextId === 'END_HOME' || nextId === 'END_BACK') { alert('探索結束。'); location.reload(); return; }
+            if (nextId === 'END_HOME' || nextId === 'END_BACK') { alert('探索終結。'); location.reload(); return; }
             currentIndex = nextId;
             updateFrame();
         }
@@ -430,7 +385,7 @@
             }
             if (current.options) return; 
             if (current.next === 'END') {
-                alert('報告完成，感謝聆聽。');
+                alert('報告結束，完成 15 分鐘的旅行分享。');
                 location.reload();
             } else {
                 currentIndex = current.next;
