@@ -62,10 +62,18 @@
             border: 10px solid #f3e5ab;
             position: relative;
             background: rgba(18, 12, 10, 0.95);
+            overflow: hidden;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 0 50px rgba(0,0,0,1);
         }
-        #clock-fill { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: conic-gradient(var(--clock-color) 0%, transparent 0%); transition: 1.2s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0.8; }
+        #clock-fill {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: conic-gradient(var(--clock-color) 0%, transparent 0%);
+            transition: 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.8;
+        }
         #clock-label { color: #f3e5ab; font-size: 1.7rem; margin-top: 25px; font-weight: 900; background: rgba(0,0,0,0.6); padding: 8px 30px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 
         /* 中心劇情圖：精確收縮寬度，騰出兩側空間 */
