@@ -131,7 +131,7 @@
             justify-content: center;
             background: rgba(0,0,0,0.82);
             backdrop-filter: blur(8px);
-            z-index: 120;
+            z-index: 260;
             padding: 40px;
         }
         #ending-notes-card {
@@ -179,6 +179,10 @@
             margin: 0 0 14px;
             line-height: 1.8;
             font-size: 1.08rem;
+        }
+        #ending-notes-markdown blockquote p,
+        #ending-notes-markdown li p {
+            margin: 0;
         }
         #ending-notes-markdown strong { color: #fff0bf; }
         #ending-notes-markdown code {
@@ -756,7 +760,11 @@
         window.addEventListener('resize', syncChoiceDim);
 
         function handleOption(nextId) {
-            if (nextId === 'END_HOME' || nextId === 'END_BACK') { alert('流浪失敗。'); location.reload(); return; }
+            if (nextId === 'END_HOME' || nextId === 'END_BACK') {
+                alert('這個選項會讓旅程提早結束，請重新選擇。');
+                checkShowOptions();
+                return;
+            }
             currentIndex = nextId;
             updateFrame();
         }
@@ -874,7 +882,7 @@
 
                 if (line.startsWith('> ')) {
                     closeOpenBlocks();
-                    html.push(`<blockquote>${renderInlineMarkdown(line.slice(2))}</blockquote>`);
+                    html.push(`<blockquote><p>${renderInlineMarkdown(line.slice(2))}</p></blockquote>`);
                     continue;
                 }
 
@@ -889,9 +897,12 @@
 
         function openNotesPanel(markdown, mode) {
             notesMode = mode;
+            const notesRoot = document.getElementById('ending-notes');
+            const notesCard = document.getElementById('ending-notes-card');
             document.getElementById('ending-notes-markdown').innerHTML = renderMarkdown(markdown);
             document.getElementById('ending-notes-button').innerText = mode === 'full-report' ? '關閉' : '重新開始';
-            document.getElementById('ending-notes').style.display = 'flex';
+            notesRoot.style.display = 'flex';
+            notesCard.scrollTop = 0;
         }
 
         function showFullReport() {
