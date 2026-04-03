@@ -3,204 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>佛光山探險：視覺小說冒險（視覺大師版）</title>
+    <title>佛光山探險：視覺小說冒險（完全版）</title>
     <style>
         :root {
-            --textbox-bg: rgba(22, 14, 10, 0.96);
-            --option-bg: linear-gradient(180deg, #c08d51 0%, #633c1a 100%);
+            --textbox-bg: rgba(28, 16, 12, 0.98);
+            --option-bg: linear-gradient(180deg, #d4a76a 0%, #8b5a2b 100%);
             --option-border: #f3e5ab;
-            --accent: #f472b6;
+            --textbox-height: 250px;
+            --textbox-bottom-gap: 30px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: pointer; user-select: none; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: "Noto Sans TC", sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: black; font-family: "Noto Sans TC", sans-serif; }
 
-        /* 首頁樣式 */
-        #start-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 1.2s;
-        }
-
-        #start-image-container {
-            width: calc(100% - 60px);
-            height: calc(100% - 60px);
-            border: 6px solid #fff;
-            outline: 3px solid #000;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 0 60px rgba(0,0,0,0.9);
-        }
-
-        #start-bg-img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            filter: brightness(0.8) contrast(1.1);
-        }
-
-        #start-title-wrap {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            width: 80%;
-        }
-
-        .start-btn {
-            margin-top: 50px;
-            padding: 20px 100px;
-            background: #633c1a;
-            border: 3px solid #f3e5ab;
-            color: #f3e5ab;
-            font-size: 2.2rem;
-            border-radius: 4px;
-            font-weight: 900;
-            transition: all 0.2s;
-            box-shadow: 8px 8px 0px #000;
-        }
-        .start-btn:hover { background: #c08d51; transform: translate(-4px, -4px); box-shadow: 12px 12px 0px #000; }
-
-        /* 遊戲內核心佈局 */
         #game-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover;
             background-position: center;
-            transition: opacity 1s;
+            transition: opacity 1.2s ease-in-out;
             z-index: 1;
         }
 
         .vignette {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.85) 100%);
+            box-shadow: inset 0 0 250px rgba(0,0,0,1);
             z-index: 2;
             pointer-events: none;
         }
 
-        /* 劇情圖片容器 - 修正比例與間距 */
+        /* 圖片沉浸式比例與包裹 - 修正為頂天立地並置中 */
         #scene-image-wrap {
             position: fixed;
             left: 50%;
-            top: 6vh; /* 頂部間距 */
+            top: 0;
             transform: translateX(-50%);
-            width: 85%;
-            max-width: 960px;
-            height: 48vh; /* 限制高度，騰出下方空間 */
+            width: 100vw;
+            /* 高度 = 總高度 - 對話框高度 - 底部間距 - 緩衝間隔 */
+            height: calc(100vh - var(--textbox-height) - var(--textbox-bottom-gap) - 40px);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 9;
             pointer-events: none;
-            background: rgba(0,0,0,0.4);
-            border-radius: 20px;
-            padding: 15px;
-            border: 2px solid rgba(243, 229, 171, 0.2);
-            backdrop-filter: blur(5px);
+            padding-top: 20px;
         }
 
         #scene-image {
-            max-width: 100%;
-            max-height: 100%;
+            display: block;
+            width: auto;
+            max-width: 95%;
+            height: auto;
+            max-height: 98%;
             object-fit: contain;
-            border-radius: 10px;
-            border: 4px solid #f3e5ab;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            border-radius: 8px;
+            border: 6px solid #f3e5ab; /* 厚白/黃金框 */
+            outline: 4px solid #2c1810;  /* 外層深色描邊 */
+            box-shadow: 0 0 60px rgba(0,0,0,1), 0 0 20px rgba(243, 229, 171, 0.2);
+            background: #111;
         }
 
-        /* 選項出現時背景變暗 */
         #choice-dim {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
             z-index: 15;
             display: none;
         }
 
-        /* 對話框 - 提高精緻度 */
+        /* 對話框區域 */
         #text-box-container {
             position: fixed;
-            bottom: 30px;
+            bottom: var(--textbox-bottom-gap);
             left: 50%;
             transform: translateX(-50%);
             width: 94%;
-            max-width: 1200px;
-            z-index: 12;
+            max-width: 1100px;
+            z-index: 10;
         }
 
         #text-box {
             background: var(--textbox-bg);
-            border: 3px solid #633c1a;
-            outline: 2px solid #000;
-            border-radius: 8px;
-            padding: 35px 60px;
-            min-height: 200px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+            border: 4px solid #8b5a2b;
+            border-radius: 6px;
+            padding: 35px 55px;
+            height: var(--textbox-height);
+            box-shadow: 0 10px 50px rgba(0,0,0,0.9);
             position: relative;
         }
 
         #speaker-name {
             position: absolute;
             top: -24px;
-            left: 50px;
-            background: #633c1a;
+            left: 45px;
+            background: #8b5a2b;
             padding: 6px 40px;
             border: 2px solid #f3e5ab;
             color: #f3e5ab;
             font-weight: bold;
             font-size: 1.3rem;
-            border-radius: 4px;
+            box-shadow: 4px 4px 0px #000;
         }
 
         #dialogue-text {
             color: #f3e5ab;
-            font-size: 1.55rem;
+            font-size: 1.6rem;
             line-height: 1.8;
             margin-top: 10px;
+            text-shadow: 1px 1px 2px #000;
         }
 
-        /* 選項按鈕 - 居中且震撼 */
         #options-container {
             position: fixed;
-            top: 50%; left: 50%;
+            top: 45%;
+            left: 50%;
             transform: translate(-50%, -50%);
             z-index: 20;
             display: none;
             flex-direction: column;
-            gap: 25px;
-            width: 550px;
+            gap: 20px;
+            width: 500px;
         }
 
         .option-btn {
             background: var(--option-bg);
-            border: 2px solid var(--option-border);
-            border-radius: 4px;
-            padding: 22px 40px;
+            border: 3px solid var(--option-border);
+            padding: 22px;
             color: #2c1810;
             font-weight: 900;
             font-size: 1.5rem;
             text-align: center;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.7);
-            transition: all 0.15s;
+            box-shadow: 8px 8px 0px #000;
+            transition: all 0.2s;
         }
-        .option-btn:hover { border-color: #fff; transform: scale(1.05); filter: contrast(1.2); }
+        .option-btn:hover { transform: translate(-4px, -4px); box-shadow: 12px 12px 0px #000; filter: brightness(1.1); }
 
         #next-indicator {
             position: absolute;
-            bottom: 25px; right: 40px;
-            color: #f3e5ab; opacity: 0.7;
+            bottom: 25px;
+            right: 40px;
+            color: #f3e5ab;
             animation: bounce 0.8s infinite alternate;
         }
 
-        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(10px); } }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(8px); } }
+
+        /* 首頁 */
+        #start-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #121212;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s;
+            padding: 30px;
+        }
+        #start-img-wrap {
+            width: 100%; height: 100%;
+            border: 10px solid #fff;
+            outline: 4px solid #000;
+            position: relative;
+            overflow: hidden;
+        }
+        #start-img { width: 100%; height: 100%; object-fit: cover; }
+        #start-title {
+            position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.7);
+            padding: 40px 60px;
+            border: 2px solid #fff;
+            text-align: center;
+        }
 
         #progress {
             position: fixed;
@@ -215,11 +192,11 @@
     <div id="progress">冒險進度：1 / 10</div>
     
     <div id="start-overlay">
-        <div id="start-image-container">
-            <img id="start-bg-img" src="web-images/IMG_0671.jpg">
-            <div id="start-title-wrap">
-                <h1 style="font-size: 4.5rem; color: #fff; text-shadow: 4px 4px 0 #000; letter-spacing: 12px;">佛光山：末日流浪</h1>
-                <button class="start-btn" onclick="startGame()">START ADVENTURE</button>
+        <div id="start-img-wrap">
+            <img id="start-img" src="web-images/IMG_0671.jpg">
+            <div id="start-title">
+                <h1 style="font-size: 4.5rem; color: #fff; letter-spacing: 15px; margin-bottom: 30px;">佛光山：末日流浪</h1>
+                <button style="padding: 15px 80px; font-size: 2rem; background: #fff; border: none; font-weight: 900;" onclick="startGame()">ENTER</button>
             </div>
         </div>
     </div>
@@ -227,8 +204,6 @@
     <div id="game-bg"></div>
     <div class="vignette"></div>
     <div id="choice-dim"></div>
-    
-    <!-- 修正間距後的圖片區域 -->
     <div id="scene-image-wrap">
         <img id="scene-image" alt="劇情圖片">
     </div>
@@ -250,7 +225,7 @@
                 { speaker: '旁白', text: '這個目標沒有明確路線，卻逼著我不要再照慣性行走，而是把自己放進一個真正可能遇到陌生人的地方。' }
             ], next: 1 },
             { bg: 'web-images/IMG_0655.jpg', image: 'web-images/IMG_0650.jpg', dialogues: [
-                { speaker: '我', text: '出門前我才發現忘了防曬。這一天，我不想只重複平庸的行程。我決定去一個這輩子可能再也去不到的地方：佛光大學。' },
+                { speaker: '我', text: '出門前我才發現忘了塗防曬。這一天，我不想只重複平庸的行程。我決定去一個這輩子可能再也去不到的地方：佛光大學。' },
                 { speaker: '我', text: '它在宜蘭山頂，甚至因為大環境因素面臨停辦。幾乎沒有人會獨自前往，這反而讓它更像我真正該去的目的地。' }
             ], next: 2 },
             { 
@@ -330,12 +305,12 @@
                     { title: '停下來哭泣', next: 16 }
                 ]
             },
-            { bg: 'web-images/IMG_0681.jpg', image: 'web-images/IMG_0687.jpg', dialogues: [
+            { bg: 'web-images/IMG_0681.jpg', image: 'IMG_0695.PNG', dialogues: [
                 { speaker: '孤絕', text: '最後一班校車已走。我握緊手機跟僅存的電力，對著黑暗的山區嘗試發出最後的救援訊源。' },
                 { speaker: '孤絕', text: '警衛室裡的人告訴我，末班校車八點半就離開了。那一刻我才真正意識到，浪漫探險和危險流浪之間只有一道很薄的線。' }
             ], next: 17 },
             { 
-                bg: 'web-images/IMG_0687.jpg', image: 'IMG_0695.PNG', speaker: '抉擇', text: '第八題：告求', 
+                bg: 'web-images/IMG_0687.jpg', image: 'IMG_0696.PNG', speaker: '抉擇', text: '第八題：告求', 
                 options: [
                     { title: '瞞著媽媽假裝安全', next: 18 },
                     { title: '誠實求援', next: 18 }
@@ -346,9 +321,9 @@
                 { speaker: '救命', text: '23:30 我回到臺北車站，午夜十二點才踏進家門。熟悉的城市燈光重新包住我，也讓這場流浪終於有了平安的結尾。' }
             ], next: 19 },
             { 
-                bg: 'web-images/IMG_0703.jpg', image: 'web-images/IMG_0688.jpg', speaker: '抉擇', text: '第九題：結論', 
+                bg: 'web-images/IMG_0703.jpg', image: 'web-images/IMG_0688.jpg', speaker: '抉擇', text: '第九題：總結原則', 
                 options: [
-                    { title: '確保安全意識', next: 20 },
+                    { title: '不作功課但確保安全', next: 20 },
                     { title: '以後只爬象山', next: 20 }
                 ]
             },
@@ -358,14 +333,13 @@
         let currentIndex = 0;
         let currentDialogueIndex = 0;
         let isTyping = false;
-        let qCount = 1;
 
         function startGame() {
             document.getElementById('start-overlay').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('start-overlay').style.display = 'none';
                 updateFrame();
-            }, 1200);
+            }, 1000);
         }
 
         function updateFrame() {
@@ -376,7 +350,6 @@
             const choiceDim = document.getElementById('choice-dim');
             
             bg.style.backgroundImage = `url('${current.bg}')`;
-
             if (current.image) {
                 sceneImage.src = current.image;
                 sceneImageWrap.style.display = 'flex';
@@ -393,9 +366,7 @@
         }
 
         function getDialogueEntry(scene) {
-            if (scene.dialogues) {
-                return scene.dialogues[currentDialogueIndex];
-            }
+            if (scene.dialogues) return scene.dialogues[currentDialogueIndex];
             return { speaker: scene.speaker, text: scene.text };
         }
 
@@ -459,7 +430,7 @@
             }
             if (current.options) return; 
             if (current.next === 'END') {
-                alert('報告完成，感謝聆聽這段流浪記。');
+                alert('報告完成，感謝聆聽。');
                 location.reload();
             } else {
                 currentIndex = current.next;
