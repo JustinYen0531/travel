@@ -95,6 +95,31 @@
             width: 500px;
         }
 
+        #scene-image-wrap {
+            position: fixed;
+            left: 50%;
+            bottom: 300px;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 1100px;
+            display: none;
+            justify-content: center;
+            z-index: 9;
+            pointer-events: none;
+        }
+
+        #scene-image {
+            display: block;
+            width: 100%;
+            max-width: 980px;
+            max-height: 42vh;
+            object-fit: contain;
+            border-radius: 14px;
+            border: 3px solid rgba(243, 229, 171, 0.75);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+            background: rgba(0, 0, 0, 0.35);
+        }
+
         .option-btn {
             background: var(--option-bg);
             border: 2px solid var(--option-border);
@@ -162,6 +187,9 @@
 
     <div id="game-bg"></div>
     <div class="vignette"></div>
+    <div id="scene-image-wrap">
+        <img id="scene-image" alt="劇情圖片">
+    </div>
 
     <div id="options-container"></div>
 
@@ -176,17 +204,17 @@
     <script>
         const scenario = [
             /* Q1: 出發 */
-            { bg: 'IMG_0695.PNG', speaker: '旁白', text: '老師說，旅行的第一步是設定目標。我的目標其實很模糊，卻也很真誠：追隨隨機性，並且嘗試與陌生人交流。那天下午，我本來只打算去臺北象山，完成一場再普通不過的出門。', next: 1 },
-            { bg: 'IMG_0695.PNG', speaker: '我', text: '可就在出門前，我發現自己忘了塗防曬；再加上象山每年至少爬一次，早就失去新鮮感。就在那個猶豫的瞬間，某種鬆架構的本能啟動了，我決定去一個這輩子可能再也去不到的地方。', next: 2 },
+            { bg: 'IMG_0695.PNG', image: 'IMG_0649.HEIC', speaker: '旁白', text: '老師說，旅行的第一步是設定目標。我的目標其實很模糊，卻也很真誠：追隨隨機性，並且嘗試與陌生人交流。那天下午，我本來只打算去臺北象山，完成一場再普通不過的出門。', next: 1 },
+            { bg: 'IMG_0695.PNG', image: 'IMG_0650.HEIC', speaker: '我', text: '可就在出門前，我發現自己忘了塗防曬；再加上象山每年至少爬一次，早就失去新鮮感。就在那個猶豫的瞬間，某種鬆架構的本能啟動了，我決定去一個這輩子可能再也去不到的地方。', next: 2 },
             { 
-                bg: 'IMG_0695.PNG', speaker: '抉擇', text: '第一題：當熟悉的行程失去吸引力，我要把這一天導向哪裡？', 
+                bg: 'IMG_0695.PNG', image: 'IMG_0665.HEIC', speaker: '抉擇', text: '第一題：當熟悉的行程失去吸引力，我要把這一天導向哪裡？', 
                 options: [
                     { title: '打道回府避暑', next: 'END_HOME' },
                     { title: '前往偏僻的佛光大學', next: 3 }
                 ]
             },
             /* Q2: 防曬 */
-            { bg: 'IMG_0653.HEIC', speaker: '我', text: '佛光大學的名字浮現在我腦海中。它因為大環境因素面臨停辦，坐落在宜蘭山頂的邊疆地帶，幾乎沒有任何人會獨自前往。我詢問了 AI，它也建議我在候選名單裡選佛光大學，因為搭臺鐵到礁溪的動線最直接。', next: 4 },
+            { bg: 'IMG_0653.HEIC', image: 'IMG_0661.HEIC', speaker: '我', text: '佛光大學的名字浮現在我腦海中。它因為大環境因素面臨停辦，坐落在宜蘭山頂的邊疆地帶，幾乎沒有任何人會獨自前往。我詢問了 AI，它也建議我在候選名單裡選佛光大學，因為搭臺鐵到礁溪的動線最直接。', next: 4 },
             { 
                 bg: 'IMG_0653.HEIC', speaker: '抉擇', text: '第二題：抵達臺北車站後，我還要不要為了防曬與舒適感多停一下？', 
                 options: [
@@ -195,10 +223,10 @@
                 ]
             },
             /* Q3: 交通 */
-            { bg: 'IMG_0653.HEIC', speaker: '臺鐵車廂', text: '下午三點半，我抵達臺北車站，第一次有意識地主動搭乘臺鐵。車廂內部出乎意料地舒適，那種感覺很像加大版的捷運；我坐在靠窗的位置，眼睛幾乎黏在窗外移不開。', next: 6 },
-            { bg: 'IMG_0653.HEIC', speaker: '我', text: '窗外的景色像一部微型地理演化史，從密集建築、到工廠與田野穿插、最後變成綠意覆蓋一切。我試著打開校園 BBS 問有沒有人願意吃飯聊天，卻只看到一天只有一則貼文的冷清版面，最後在搖晃中沉沉睡去。', next: 7 },
+            { bg: 'IMG_0653.HEIC', image: 'IMG_0663.HEIC', speaker: '臺鐵車廂', text: '下午三點半，我抵達臺北車站，第一次有意識地主動搭乘臺鐵。車廂內部出乎意料地舒適，那種感覺很像加大版的捷運；我坐在靠窗的位置，眼睛幾乎黏在窗外移不開。', next: 6 },
+            { bg: 'IMG_0653.HEIC', image: 'IMG_0663.HEIC', speaker: '我', text: '窗外的景色像一部微型地理演化史，從密集建築、到工廠與田野穿插、最後變成綠意覆蓋一切。我試著打開校園 BBS 問有沒有人願意吃飯聊天，卻只看到一天只有一則貼文的冷清版面，最後在搖晃中沉沉睡去。', next: 7 },
             /* Q4: 意外 */
-            { bg: 'IMG_0653.HEIC', speaker: '我', text: '再睜開眼時，火車已經停在宜蘭站，而不是原定的礁溪。我慌亂地去補了十一元票價差，走出站後只覺得這個意外來得非常戲劇性，但也讓整趟旅程突然變得更真實，像是 serendipity 終於正式登場。', next: 8 },
+            { bg: 'IMG_0653.HEIC', image: 'IMG_0664.HEIC', speaker: '我', text: '再睜開眼時，火車已經停在宜蘭站，而不是原定的礁溪。我慌亂地去補了十一元票價差，走出站後只覺得這個意外來得非常戲劇性，但也讓整趟旅程突然變得更真實，像是 serendipity 終於正式登場。', next: 8 },
             { 
                 bg: 'IMG_0653.HEIC', speaker: '抉擇', text: '第三題：面對坐過站這種烏龍，我要把它當成失敗，還是當成 serendipity？', 
                 options: [
@@ -293,9 +321,19 @@
         function updateFrame() {
             const current = scenario[currentIndex];
             const bg = document.getElementById('game-bg');
+            const sceneImageWrap = document.getElementById('scene-image-wrap');
+            const sceneImage = document.getElementById('scene-image');
             
             // 背景平滑切換
             bg.style.backgroundImage = `url('${current.bg}')`;
+
+            if (current.image) {
+                sceneImage.src = current.image;
+                sceneImageWrap.style.display = 'flex';
+            } else {
+                sceneImage.removeAttribute('src');
+                sceneImageWrap.style.display = 'none';
+            }
             
             // 更新進度顯示 (簡單估計)
             if(current.speaker === '抉擇') {
