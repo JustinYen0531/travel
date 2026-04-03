@@ -144,13 +144,41 @@
             padding: 32px 36px;
             color: #f3e5ab;
         }
-        #ending-notes-card pre {
-            margin: 0;
-            white-space: pre-wrap;
-            word-break: break-word;
-            font-family: "Noto Sans TC", sans-serif;
-            font-size: 1.15rem;
+        #ending-notes-markdown { font-family: "Noto Sans TC", sans-serif; }
+        #ending-notes-markdown h1 {
+            margin: 0 0 18px;
+            font-size: 2rem;
+            line-height: 1.3;
+            color: #fff0bf;
+        }
+        #ending-notes-markdown h2 {
+            margin: 26px 0 14px;
+            font-size: 1.45rem;
+            line-height: 1.4;
+            color: #f3e5ab;
+        }
+        #ending-notes-markdown ul {
+            margin: 0 0 0 1.4rem;
+            padding: 0;
+        }
+        #ending-notes-markdown li {
+            margin: 0 0 12px;
+            line-height: 1.85;
+            font-size: 1.08rem;
+        }
+        #ending-notes-markdown blockquote {
+            margin: 18px 0 0;
+            padding: 16px 18px;
+            border-left: 4px solid #f3e5ab;
+            background: rgba(243, 229, 171, 0.08);
+            color: #fff0bf;
+            font-size: 1.1rem;
             line-height: 1.8;
+        }
+        #ending-notes-markdown p {
+            margin: 0 0 14px;
+            line-height: 1.8;
+            font-size: 1.08rem;
         }
         #ending-notes-actions {
             display: flex;
@@ -230,7 +258,7 @@
 
     <div id="ending-notes">
         <div id="ending-notes-card">
-            <pre id="ending-notes-markdown"></pre>
+            <div id="ending-notes-markdown"></div>
             <div id="ending-notes-actions">
                 <button onclick="location.reload()">重新開始</button>
             </div>
@@ -502,8 +530,74 @@
             updateFrame();
         }
 
+        function renderMarkdown(markdown) {
+            const lines = markdown.split('\n');
+            const html = [];
+            let inList = false;
+
+            for (const rawLine of lines) {
+                const line = rawLine.trim();
+
+                if (!line) {
+                    if (inList) {
+                        html.push('</ul>');
+                        inList = false;
+                    }
+                    continue;
+                }
+
+                if (line.startsWith('## ')) {
+                    if (inList) {
+                        html.push('</ul>');
+                        inList = false;
+                    }
+                    html.push(`<h2>${line.slice(3)}</h2>`);
+                    continue;
+                }
+
+                if (line.startsWith('# ')) {
+                    if (inList) {
+                        html.push('</ul>');
+                        inList = false;
+                    }
+                    html.push(`<h1>${line.slice(2)}</h1>`);
+                    continue;
+                }
+
+                if (line.startsWith('- ')) {
+                    if (!inList) {
+                        html.push('<ul>');
+                        inList = true;
+                    }
+                    html.push(`<li>${line.slice(2)}</li>`);
+                    continue;
+                }
+
+                if (line.startsWith('> ')) {
+                    if (inList) {
+                        html.push('</ul>');
+                        inList = false;
+                    }
+                    html.push(`<blockquote>${line.slice(2)}</blockquote>`);
+                    continue;
+                }
+
+                if (inList) {
+                    html.push('</ul>');
+                    inList = false;
+                }
+                html.push(`<p>${line}</p>`);
+            }
+
+            if (inList) {
+                html.push('</ul>');
+            }
+
+            return html.join('');
+        }
+
         function showEndingNotes() {
-            document.getElementById('ending-notes-markdown').textContent = endingNotesMarkdown;
+            document.getElementById('ending-notes-markdown').innerHTML = renderMarkdown(endingNotesMarkdown);
             document.getElementById('ending-notes').style.display = 'flex';
         }
 
