@@ -54,6 +54,21 @@
             pointer-events: none;
         }
 
+        #scene-image-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(88, 90, 94, 0.34);
+            border-radius: 14px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+
+        #scene-image-wrap.choice-active::after {
+            opacity: 1;
+        }
+
         #scene-image {
             display: block;
             width: auto;
@@ -331,6 +346,7 @@
             typeEffect(current.text);
             document.getElementById('options-container').style.display = 'none';
             choiceDim.style.display = 'none';
+            sceneImageWrap.classList.remove('choice-active');
         }
 
         function typeEffect(text) {
@@ -354,6 +370,7 @@
             if (current.options) {
                 const optContainer = document.getElementById('options-container');
                 const choiceDim = document.getElementById('choice-dim');
+                const sceneImageWrap = document.getElementById('scene-image-wrap');
                 optContainer.innerHTML = '';
                 current.options.forEach(opt => {
                     const btn = document.createElement('div');
@@ -363,6 +380,7 @@
                     optContainer.appendChild(btn);
                 });
                 choiceDim.style.display = 'block';
+                sceneImageWrap.classList.add('choice-active');
                 optContainer.style.display = 'flex';
                 document.getElementById('next-indicator').style.display = 'none';
             } else {
