@@ -245,8 +245,14 @@
 
     <script>
         const scenario = [
-            { bg: 'web-images/IMG_0655.jpg', image: 'web-images/IMG_0649.jpg', speaker: '旁白', text: '老師說，旅行的第一步是設定目標。我的目標其實很模糊，卻也很真誠：追隨隨機性，並且嘗試與陌生人交流。', next: 1 },
-            { bg: 'web-images/IMG_0655.jpg', image: 'web-images/IMG_0650.jpg', speaker: '我', text: '出門前我才發現忘了防曬。這一天，我不想只重複平庸的行程。我決定去一個這輩子可能再也去不到的地方：佛光大學。', next: 2 },
+            { bg: 'web-images/IMG_0655.jpg', image: 'web-images/IMG_0649.jpg', dialogues: [
+                { speaker: '旁白', text: '老師說，旅行的第一步是設定目標。我的目標其實很模糊，卻也很真誠：追隨隨機性，並且嘗試與陌生人交流。' },
+                { speaker: '旁白', text: '這個目標沒有明確路線，卻逼著我不要再照慣性行走，而是把自己放進一個真正可能遇到陌生人的地方。' }
+            ], next: 1 },
+            { bg: 'web-images/IMG_0655.jpg', image: 'web-images/IMG_0650.jpg', dialogues: [
+                { speaker: '我', text: '出門前我才發現忘了防曬。這一天，我不想只重複平庸的行程。我決定去一個這輩子可能再也去不到的地方：佛光大學。' },
+                { speaker: '我', text: '它在宜蘭山頂，甚至因為大環境因素面臨停辦。幾乎沒有人會獨自前往，這反而讓它更像我真正該去的目的地。' }
+            ], next: 2 },
             { 
                 bg: 'web-images/IMG_0655.jpg', image: 'web-images/IMG_0665.jpg', speaker: '抉擇', text: '第一題：目的地選擇', 
                 options: [
@@ -254,7 +260,10 @@
                     { title: '前往佛光大學 (宜蘭)', next: 3 }
                 ]
             },
-            { bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0661.jpg', speaker: '我', text: '血液開始沸騰。AI 建議我前往佛大，因為搭臺鐵速度較快。這是一場具備探險價值的「外縣市處女秀」。', next: 4 },
+            { bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0661.jpg', dialogues: [
+                { speaker: '我', text: '血液開始沸騰。AI 建議我前往佛大，因為搭臺鐵速度較快。這是一場具備探險價值的「外縣市處女秀」。' },
+                { speaker: '我', text: '我幾乎從未獨自前往外縣市，而這次只因為交通動線更直接、約一個半小時可抵達礁溪，就決定把熱血押在佛大身上。' }
+            ], next: 4 },
             { 
                 bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0657.jpg', speaker: '抉擇', text: '第二題：心態調整', 
                 options: [
@@ -262,8 +271,14 @@
                     { title: '買個防曬再走', next: 5 }
                 ]
             },
-            { bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0663.jpg', speaker: '臺鐵', text: '坐在窗邊，我看著地景慢慢演化。城市褪去，田野浮現。這種體察讓我感到前所未有的「脫隊感」。', next: 6 },
-            { bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0664.jpg', speaker: '驚醒', text: '糟了！醒來已經到了宜蘭站！我只好補了十一元票差。感覺這就是 Serendipity 正在對我招手。', next: 7 },
+            { bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0663.jpg', dialogues: [
+                { speaker: '臺鐵', text: '坐在窗邊，我看著地景慢慢演化。城市褪去，田野浮現。這種體察讓我感到前所未有的「脫隊感」。' },
+                { speaker: '臺鐵', text: '窗外先是密集建築，再來是工廠與田野交錯，最後綠意慢慢覆蓋一切。老師說的 relaxed, see what happens，大概就是這種感覺。' }
+            ], next: 6 },
+            { bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0664.jpg', dialogues: [
+                { speaker: '驚醒', text: '糟了！醒來已經到了宜蘭站！我只好補了十一元票差。感覺這就是 Serendipity 正在對我招手。' },
+                { speaker: '驚醒', text: '我慌亂地走向詢問處補票，走出站後 AI 還安慰我說宜蘭也算順路。這個意外沒有毀掉旅程，反而把它推向更真實的方向。' }
+            ], next: 7 },
             { 
                 bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0666.jpg', speaker: '抉擇', text: '第三題：路上的波折', 
                 options: [
@@ -271,7 +286,10 @@
                     { title: '沮喪地坐回去', next: 'END_BACK' }
                 ]
             },
-            { bg: 'web-images/IMG_0664.jpg', image: 'web-images/IMG_0667.jpg', speaker: '計程車', text: '我搭上了車。後座坐著司機下班的兒子。這成了這趟旅程第一個真正的人際接觸。', next: 9 },
+            { bg: 'web-images/IMG_0664.jpg', image: 'web-images/IMG_0667.jpg', dialogues: [
+                { speaker: '計程車', text: '我搭上了車。後座坐著司機下班的兒子。這成了這趟旅程第一個真正的人際接觸。' },
+                { speaker: '計程車', text: '他一路追問我是不是放假、為什麼現在才上山。我最後坦承自己根本不是佛光學生，只是來做探索作業，司機父子才露出「原來如此」的笑。' }
+            ], next: 9 },
             { 
                 bg: 'web-images/IMG_0664.jpg', image: 'web-images/IMG_0669.jpg', speaker: '抉擇', text: '第四題：人際交流', 
                 options: [
@@ -279,7 +297,10 @@
                     { title: '欣然接受溫暖', next: 10 }
                 ]
             },
-            { bg: 'web-images/IMG_0671.jpg', image: 'web-images/IMG_0670.jpg', speaker: '雲起樓', text: '山頂行政大樓「雲起樓」漆黑無比。走馬燈閃動著疫情告示。這分明就是 Dreamcore 的真實場景。', next: 11 },
+            { bg: 'web-images/IMG_0671.jpg', image: 'web-images/IMG_0670.jpg', dialogues: [
+                { speaker: '雲起樓', text: '山頂行政大樓「雲起樓」漆黑無比。走馬燈閃動著疫情告示。這分明就是 Dreamcore 的真實場景。' },
+                { speaker: '雲起樓', text: '媽媽剛好打電話來，她原本以為我在象山。當我說自己在佛光大學時，她根本不信，直到我拍下印著校名的車子傳給她。' }
+            ], next: 11 },
             { 
                 bg: 'web-images/IMG_0674.jpg', image: 'web-images/IMG_0671.jpg', speaker: '抉擇', text: '第五題：校園探險', 
                 options: [
@@ -287,7 +308,10 @@
                     { title: '留在萊爾富周邊', next: 12 }
                 ]
             },
-            { bg: 'web-images/IMG_0674.jpg', image: 'web-images/IMG_0681.jpg', speaker: '生存', text: '這裡沒有餐具。我蹲在走廊邊，對著蘭陽平原深淵般的夜色，將米粒倒進嘴裡。', next: 13 },
+            { bg: 'web-images/IMG_0674.jpg', image: 'web-images/IMG_0681.jpg', dialogues: [
+                { speaker: '生存', text: '這裡沒有餐具。我蹲在走廊邊，對著蘭陽平原深淵般的夜色，將米粒倒進嘴裡。' },
+                { speaker: '生存', text: '我原本以為校園內一定有餐廳，結果整棟樓只剩萊爾富，而且加熱食品幾乎售罄，只剩一份冷凍炒飯。連餐具也沒有，逼得我只能以碗就口。' }
+            ], next: 13 },
             { 
                 bg: 'web-images/IMG_0674.jpg', image: 'web-images/IMG_0680.jpg', speaker: '抉擇', text: '第六題：生存方式', 
                 options: [
@@ -295,7 +319,10 @@
                     { title: '用手抓著吃', next: 14 }
                 ]
             },
-            { bg: 'web-images/IMG_0675.jpg', image: 'web-images/IMG_0679.jpg', speaker: '下山驚魂', text: '晚上八點。叫不到車。我看見那棟陰森不堪的「蔬菜學系」。我想起母親焦急的電話，那種壓迫感快讓我崩潰。', next: 15 },
+            { bg: 'web-images/IMG_0675.jpg', image: 'web-images/IMG_0679.jpg', dialogues: [
+                { speaker: '下山驚魂', text: '晚上八點。叫不到車。我看見那棟陰森不堪的「蔬菜學系」。我想起母親焦急的電話，那種壓迫感快讓我崩潰。' },
+                { speaker: '下山驚魂', text: '我用 55688 加了優先小費，卻還是沒有司機願意進山。月光下那棟樓斑駁得像鬼片場景，我甚至還幾度走進死胡同。' }
+            ], next: 15 },
             { 
                 bg: 'web-images/IMG_0675.jpg', image: 'web-images/IMG_0684.jpg', speaker: '抉擇', text: '第七題：意志與恐懼', 
                 options: [
@@ -303,7 +330,10 @@
                     { title: '停下來哭泣', next: 16 }
                 ]
             },
-            { bg: 'web-images/IMG_0681.jpg', image: 'web-images/IMG_0687.jpg', speaker: '孤絕', text: '最後一班校車已走。我握緊手機跟僅存的電力，對著黑暗的山區嘗試發出最後的救援訊源。', next: 17 },
+            { bg: 'web-images/IMG_0681.jpg', image: 'web-images/IMG_0687.jpg', dialogues: [
+                { speaker: '孤絕', text: '最後一班校車已走。我握緊手機跟僅存的電力，對著黑暗的山區嘗試發出最後的救援訊源。' },
+                { speaker: '孤絕', text: '警衛室裡的人告訴我，末班校車八點半就離開了。那一刻我才真正意識到，浪漫探險和危險流浪之間只有一道很薄的線。' }
+            ], next: 17 },
             { 
                 bg: 'web-images/IMG_0687.jpg', image: 'IMG_0695.PNG', speaker: '抉擇', text: '第八題：告求', 
                 options: [
@@ -311,7 +341,10 @@
                     { title: '誠實求援', next: 18 }
                 ]
             },
-            { bg: 'web-images/IMG_0703.jpg', image: 'web-images/IMG_0701.jpg', speaker: '救命', text: '兩道白色燈光出現了。那輛計程車是我今晚看過最美的風景。21:44 我終於登上了自強號。', next: 19 },
+            { bg: 'web-images/IMG_0703.jpg', image: 'web-images/IMG_0701.jpg', dialogues: [
+                { speaker: '救命', text: '兩道白色燈光出現了。那輛計程車是我今晚看過最美的風景。21:44 我終於登上了自強號。' },
+                { speaker: '救命', text: '23:30 我回到臺北車站，午夜十二點才踏進家門。熟悉的城市燈光重新包住我，也讓這場流浪終於有了平安的結尾。' }
+            ], next: 19 },
             { 
                 bg: 'web-images/IMG_0703.jpg', image: 'web-images/IMG_0688.jpg', speaker: '抉擇', text: '第九題：結論', 
                 options: [
@@ -323,6 +356,7 @@
         ];
 
         let currentIndex = 0;
+        let currentDialogueIndex = 0;
         let isTyping = false;
         let qCount = 1;
 
@@ -351,11 +385,25 @@
             }
             
             document.getElementById('progress').innerText = `冒險進度：${currentIndex + 1} / ${scenario.length}`;
-            document.getElementById('speaker-name').innerText = current.speaker;
-            typeEffect(current.text);
+            currentDialogueIndex = 0;
+            renderDialogue();
             
             document.getElementById('options-container').style.display = 'none';
             choiceDim.style.display = 'none';
+        }
+
+        function getDialogueEntry(scene) {
+            if (scene.dialogues) {
+                return scene.dialogues[currentDialogueIndex];
+            }
+            return { speaker: scene.speaker, text: scene.text };
+        }
+
+        function renderDialogue() {
+            const current = scenario[currentIndex];
+            const dialogue = getDialogueEntry(current);
+            document.getElementById('speaker-name').innerText = dialogue.speaker;
+            typeEffect(dialogue.text);
         }
 
         function typeEffect(text) {
@@ -404,6 +452,11 @@
         function nextAction() {
             if (isTyping) return;
             const current = scenario[currentIndex];
+            if (current.dialogues && currentDialogueIndex < current.dialogues.length - 1) {
+                currentDialogueIndex++;
+                renderDialogue();
+                return;
+            }
             if (current.options) return; 
             if (current.next === 'END') {
                 alert('報告完成，感謝聆聽這段流浪記。');
