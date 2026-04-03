@@ -31,6 +31,16 @@
             pointer-events: none;
         }
 
+        #choice-dim {
+            position: fixed;
+            inset: 0;
+            background: rgba(82, 84, 88, 0.38);
+            backdrop-filter: blur(1.8px) saturate(0.75);
+            z-index: 8;
+            display: none;
+            pointer-events: none;
+        }
+
         #scene-image-wrap {
             position: fixed;
             left: 50%;
@@ -182,6 +192,7 @@
 
     <div id="game-bg"></div>
     <div class="vignette"></div>
+    <div id="choice-dim"></div>
     <div id="scene-image-wrap">
         <img id="scene-image" alt="劇情圖片">
     </div>
@@ -300,6 +311,7 @@
             const bg = document.getElementById('game-bg');
             const sceneImageWrap = document.getElementById('scene-image-wrap');
             const sceneImage = document.getElementById('scene-image');
+            const choiceDim = document.getElementById('choice-dim');
             
             bg.style.backgroundImage = `url('${current.bg}')`;
 
@@ -318,6 +330,7 @@
             document.getElementById('speaker-name').innerText = current.speaker;
             typeEffect(current.text);
             document.getElementById('options-container').style.display = 'none';
+            choiceDim.style.display = 'none';
         }
 
         function typeEffect(text) {
@@ -340,6 +353,7 @@
             const current = scenario[currentIndex];
             if (current.options) {
                 const optContainer = document.getElementById('options-container');
+                const choiceDim = document.getElementById('choice-dim');
                 optContainer.innerHTML = '';
                 current.options.forEach(opt => {
                     const btn = document.createElement('div');
@@ -348,6 +362,7 @@
                     btn.onclick = (e) => { e.stopPropagation(); handleOption(opt.next); };
                     optContainer.appendChild(btn);
                 });
+                choiceDim.style.display = 'block';
                 optContainer.style.display = 'flex';
                 document.getElementById('next-indicator').style.display = 'none';
             } else {
