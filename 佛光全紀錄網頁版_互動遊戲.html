@@ -230,6 +230,50 @@
             box-shadow: 6px 6px 0 #000;
         }
 
+        #wrong-option-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(6px);
+            z-index: 320;
+            padding: 24px;
+        }
+        #wrong-option-card {
+            width: min(560px, 92vw);
+            background: rgba(26, 15, 12, 0.97);
+            border: 4px solid #f3e5ab;
+            box-shadow: 0 20px 55px rgba(0,0,0,0.9);
+            padding: 26px 28px 24px;
+            color: #f3e5ab;
+        }
+        #wrong-option-title {
+            font-size: 1.55rem;
+            font-weight: 900;
+            color: #fff0bf;
+            margin-bottom: 14px;
+        }
+        #wrong-option-text {
+            font-size: 1.12rem;
+            line-height: 1.85;
+            margin-bottom: 22px;
+        }
+        #wrong-option-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        #wrong-option-close {
+            background: var(--option-bg);
+            border: 3px solid var(--option-border);
+            color: #2c1810;
+            font-weight: 900;
+            font-size: 1rem;
+            padding: 12px 26px;
+            box-shadow: 5px 5px 0 #000;
+        }
+
         /* 首頁 */
         #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 25px; transition: opacity 1s; }
         #start-img-wrap { width: 100%; height: 100%; border: 15px solid #fff; outline: 5px solid #000; position: relative; overflow: hidden; }
@@ -350,6 +394,16 @@
         </div>
     </div>
 
+    <div id="wrong-option-modal">
+        <div id="wrong-option-card">
+            <div id="wrong-option-title">提示</div>
+            <div id="wrong-option-text">這個選項不符合目前劇情，請重新選擇。</div>
+            <div id="wrong-option-actions">
+                <button id="wrong-option-close" onclick="closeWrongOptionModal()">我知道了</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const scenario = [
             /* 0-2 出發 */
@@ -365,7 +419,7 @@
             ], next: 2 },
             { 
                 bg: 'web-images/IMG_0655.jpg', image: 'web-images/IMG_0665.jpg', speaker: '抉擇', text: '第一題：當象山忽然變得毫無新鮮感，而佛光大學又像一個幾乎不會再去第二次的地方時，我該回頭收手，還是乾脆把今天押在這場未知上？', label: '抉擇中', hint: '原本你只是想去象山，但忘了防曬，又覺得象山每年至少爬一次，早就失去新鮮感。佛光大學則因停辦陰影與山頂位置，突然變得很有探險價值。',
-                options: [ { title: '打道回府避暑', next: 'END_HOME' }, { title: '衝去佛光大學', next: 3 } ]
+                options: [ { title: '打道回府避暑', next: 'END_HOME', correct: false }, { title: '衝去佛光大學', next: 3, correct: true } ]
             },
             /* 3-4 臺鐵 */
             { bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0661.jpg', label: '16:00', dialogues: [
@@ -375,7 +429,7 @@
             ], next: 4 },
             { 
                 bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0657.jpg', speaker: '抉擇', text: '第二題：既然都已經決定衝去宜蘭山上的佛光大學了，我接下來要維持那股熱血直接出發，還是先把防曬與準備補齊，讓自己稍微像個正常旅人？', label: '抉擇中', hint: 'AI 建議你選佛光大學，因為臺鐵動線比較直接，約一個半小時可抵礁溪。那一刻你很熱血，但其實也知道自己準備得不多。',
-                options: [ { title: '熱血衝一波', next: 5 }, { title: '買個防曬再走', next: 5 } ]
+                options: [ { title: '熱血衝一波', next: 5, correct: true }, { title: '買個防曬再走', next: 5, correct: false } ]
             },
             /* 5-7 坐過站 */
             { bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0663.jpg', label: '17:00', dialogues: [
@@ -390,7 +444,7 @@
             ], next: 7 },
             { 
                 bg: 'web-images/IMG_0653.jpg', image: 'web-images/IMG_0666.jpg', speaker: '抉擇', text: '第三題：當我在車上直接坐過站、醒來已經人在宜蘭而不是礁溪時，我應該把這個失誤當成旅程的一部分繼續走，還是承認自己搞砸了然後立刻退回原計畫？', label: '抉擇中', hint: '你原本預定在礁溪下車，結果醒來火車已經停在宜蘭站。補完 11 元票差後，AI 還安慰你說宜蘭也算順路，這正是完整版裡的 Serendipity 時刻。',
-                options: [ { title: '將錯就錯下車', next: 8 }, { title: '立刻坐回去', next: 'END_BACK' } ]
+                options: [ { title: '將錯就錯下車', next: 8, correct: true }, { title: '立刻坐回去', next: 'END_BACK', correct: false } ]
             },
             /* 8-9 計程車 */
             { bg: 'web-images/IMG_0664.jpg', image: 'web-images/IMG_0667.jpg', label: '18:15', dialogues: [
@@ -400,7 +454,7 @@
             ], next: 9 },
             { 
                 bg: 'web-images/IMG_0664.jpg', image: 'web-images/IMG_0669.jpg', speaker: '抉擇', text: '第四題：面對計程車司機父子主動釋出的善意與聊天機會時，我是該先客氣保留、維持距離，還是順著這份人情接住它，讓陌生交流真的發生？', label: '抉擇中', hint: '司機剛結束礁溪國小校車工作，兒子也在車上。完整版裡除了聊天之外，他們還主動問過你要不要拿一份餐盒，這是旅程裡第一個真正的人際接觸。',
-                options: [ { title: '婉拒餐盒', next: 10 }, { title: '欣然接受', next: 10 } ]
+                options: [ { title: '婉拒餐盒', next: 10, correct: true }, { title: '欣然接受', next: 10, correct: false } ]
             },
             /* 10-11 雲起樓 */
             { bg: 'web-images/IMG_0671.jpg', image: 'web-images/IMG_0670.jpg', label: '19:00', dialogues: [
@@ -410,7 +464,7 @@
             ], next: 11 },
             { 
                 bg: 'web-images/IMG_0674.jpg', image: 'web-images/IMG_0671.jpg', speaker: '抉擇', text: '第五題：當雲起樓裡幾乎沒什麼學生、空曠回音又像夢核場景一樣詭異時，我應該硬著頭皮往更深處探索，還是只在比較有光的區域活動比較實際？', label: '抉擇中', hint: '完整版寫到整棟行政大樓學生不超過五位，二、三樓雖然開放，但那種空曠與回音讓你根本沒勇氣一個人上去，媽媽打電話時甚至還不相信你真的在佛光。',
-                options: [ { title: '深入禁區', next: 12 }, { title: '留在原地', next: 12 } ]
+                options: [ { title: '深入禁區', next: 12, correct: false }, { title: '留在原地', next: 12, correct: true } ]
             },
             /* 12-13 萊爾富 */
             { bg: 'web-images/IMG_0674.jpg', image: 'web-images/IMG_0681.jpg', label: '19:40', dialogues: [
@@ -420,7 +474,7 @@
             ], next: 13 },
             { 
                 bg: 'web-images/IMG_0674.jpg', image: 'web-images/IMG_0680.jpg', speaker: '抉擇', text: '第六題：在整棟樓只剩萊爾富、熱食幾乎售罄，而且店員微波完才告訴我沒有餐具的情況下，我到底要怎麼把這頓晚餐吞下去？', label: '抉擇中', hint: '你原本以為校園內一定有餐廳，結果只剩一份冷凍炒飯，店員還尷尬地說「同學，我們餐具沒有了。」這才逼出完整版最經典的以碗就口畫面。',
-                options: [ { title: '以碗就口', next: 14 }, { title: '優雅進食', next: 14 } ]
+                options: [ { title: '以碗就口', next: 14, correct: true }, { title: '優雅進食', next: 14, correct: false } ]
             },
             /* 14-15 蔬菜學系 */
             { bg: 'web-images/IMG_0675.jpg', image: 'web-images/IMG_0679.jpg', label: '20:10', dialogues: [
@@ -430,7 +484,7 @@
             ], next: 15 },
             { 
                 bg: 'web-images/IMG_0675.jpg', image: 'web-images/IMG_0684.jpg', speaker: '抉擇', text: '第七題：當黑夜、叫不到車、蔬菜學系的陰森建築與媽媽一通接一通的電話同時壓上來時，我還要靠意志力繼續往前撐，還是乾脆先讓自己崩潰一下？', label: '抉擇中', hint: '你用 55688 加了優先小費，卻始終沒有司機願意進山接客；下山途中還幾度走進死胡同，只能在黑暗裡倒退，壓力是一層層堆上來的。',
-                options: [ { title: '靠意志力走', next: 16 }, { title: '坐下大哭', next: 16 } ]
+                options: [ { title: '靠意志力走', next: 16, correct: true }, { title: '坐下大哭', next: 16, correct: false } ]
             },
             /* 16-17 警衛室 */
             { bg: 'web-images/IMG_0681.jpg', image: 'web-images/IMG_0687.jpg', label: '20:45', dialogues: [
@@ -440,7 +494,7 @@
             ], next: 17 },
             { 
                 bg: 'web-images/IMG_0681.jpg', image: 'IMG_0696.PNG', speaker: '抉擇', text: '第八題：當我走到警衛室才知道末班校車早就開走、手機電量也在往下掉時，我還要繼續瞞著媽媽假裝一切都在掌控中，還是老實開口求援？', label: '抉擇中', hint: '完整版裡你其實一直在通話中維持冷靜，還刻意隱瞞幾百塊車費與真正的慌張；但警衛一句「八點半，但已經走了」讓現實感瞬間壓了下來。',
-                options: [ { title: '瞞著媽媽', next: 18 }, { title: '誠實求援', next: 18 } ]
+                options: [ { title: '瞞著媽媽', next: 18, correct: false }, { title: '誠實求援', next: 18, correct: true } ]
             },
             /* 18-19 礁溪 */
             { bg: 'web-images/IMG_0703.jpg', image: 'web-images/IMG_0701.jpg', label: '21:30', dialogues: [
@@ -450,12 +504,12 @@
             ], next: 19 },
             { 
                 bg: 'web-images/IMG_0703.jpg', image: 'web-images/IMG_0701.jpg', speaker: '抉擇', text: '第九題：經歷整晚的混亂、等待與獲救之後，我應該把這趟旅行理解成「反正硬衝也會過」，還是更該承認安全準備其實才是冒險能成立的前提？', label: '抉擇中', hint: '真正讓你鬆開的是看見計程車燈光沿著山路彎進來，之後 21:44 上自強號、23:30 回到臺北。完整版的反思很明確：探險可以不帶攻略，但不能沒有安全意識。',
-                options: [ { title: '確保安全意識', next: 20 }, { title: '以後只爬象山', next: 20 } ]
+                options: [ { title: '確保安全意識', next: 20, correct: true }, { title: '以後只爬象山', next: 20, correct: false } ]
             },
             /* 20-21 終章 */
             { 
                 bg: 'web-images/IMG_0701.jpg', image: 'web-images/IMG_0688.jpg', speaker: '抉擇', text: '第十題：如果要替這九個小時的佛光流浪下一個結論，我該把它視為一次成功命中課堂主旨的冒險，還是把它記成一場差點失控的危險流浪？', label: '抉擇中', hint: '你在完整版最後寫得很直白：「預期說是旅程，不如說更像流浪。」但也正因為這麼像流浪，它才精準打中了鬆架構、陌生交流與安全邊界這幾件事。',
-                options: [ { title: '隨機與準備並存', next: 21 }, { title: '遠離山區冒險', next: 21 } ]
+                options: [ { title: '隨機與準備並存', next: 21, correct: true }, { title: '遠離山區冒險', next: 21, correct: false } ]
             },
             { bg: 'web-images/IMG_0701.jpg', image: 'web-images/IMG_0687.jpg', label: '00:00', dialogues: [
                 { speaker: '終結', text: '這 9 小時的流浪，是我這輩子最重要的作業。感謝聆聽。' },
@@ -467,6 +521,7 @@
         let currentIndex = 0;
         let currentDialogueIndex = 0;
         let isTyping = false;
+        let isWrongOptionModalOpen = false;
         let notesMode = 'ending';
         const endingNotesMarkdown = `# 彩蛋後記
 
@@ -745,7 +800,7 @@
                     const btn = document.createElement('div');
                     btn.className = 'option-btn';
                     btn.innerText = opt.title;
-                    btn.onclick = (e) => { e.stopPropagation(); handleOption(opt.next); };
+                    btn.onclick = (e) => { e.stopPropagation(); handleOption(opt); };
                     optContainer.appendChild(btn);
                 });
                 syncChoiceDim();
@@ -759,10 +814,25 @@
 
         window.addEventListener('resize', syncChoiceDim);
 
-        function handleOption(nextId) {
-            if (nextId === 'END_HOME' || nextId === 'END_BACK') {
-                alert('這個選項會讓旅程提早結束，請重新選擇。');
-                checkShowOptions();
+        function showWrongOptionModal(message) {
+            const modal = document.getElementById('wrong-option-modal');
+            const text = document.getElementById('wrong-option-text');
+            text.innerText = message || '這個選項不符合目前劇情，請重新選擇。';
+            isWrongOptionModalOpen = true;
+            modal.style.display = 'flex';
+        }
+
+        function closeWrongOptionModal() {
+            const modal = document.getElementById('wrong-option-modal');
+            modal.style.display = 'none';
+            isWrongOptionModalOpen = false;
+        }
+
+        function handleOption(option) {
+            const nextId = option.next;
+            const isWrong = option.correct === false || nextId === 'END_HOME' || nextId === 'END_BACK';
+            if (isWrong) {
+                showWrongOptionModal(option.feedback || '這個選項會讓旅程偏離主線，請關閉提示後重新選擇。');
                 return;
             }
             currentIndex = nextId;
@@ -922,7 +992,7 @@
         }
 
         function nextAction() {
-            if (isTyping) return;
+            if (isTyping || isWrongOptionModalOpen) return;
             const current = scenario[currentIndex];
             if (current.dialogues && currentDialogueIndex < current.dialogues.length - 1) {
                 currentDialogueIndex++;
